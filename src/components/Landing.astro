@@ -380,7 +380,24 @@ const t = translations[locale];
             letter,
             {
               x: targetX,
+              ease: "power1.out",
+            },
+            0,
+          );
+
+          scrollTl.to(
+            letter,
+            {
               y: targetY,
+              ease: "power1.in",
+            },
+            0,
+          );
+
+          // Rotation and scaling
+          scrollTl.to(
+            letter,
+            {
               rotation: 90,
               scale: 0.2,
               transformOrigin: "center center",
