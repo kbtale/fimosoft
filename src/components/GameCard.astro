@@ -45,23 +45,26 @@ const galleryImages = game.screenshots.slice(1);
             <div class="meta">
               <span class="release-date">{game.releaseDate}</span>
             </div>
-            <button class="view-toggle-btn">
-              <span class="btn-text">View more</span>
-              <svg
-                class="btn-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M12 5v14M5 12h14" class="plus-path"></path>
-              </svg>
-            </button>
           </div>
+          <button class="view-toggle-btn">
+            <div class="btn-text-wrapper">
+              <span class="btn-text-primary">Details</span>
+              <span class="btn-text-secondary">Details</span>
+            </div>
+          </button>
         </div>
       </div>
 
       <div class="genres-panel">
+        <h3 class="secondary-title">{game.title}</h3>
+        <div class="secondary-meta">
+          <span class="secondary-date">{game.releaseDate}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="details-panel">
+      <div class="details-content">
         <div class="genres">
           {
             game.genre
@@ -69,12 +72,24 @@ const galleryImages = game.screenshots.slice(1);
               .map((genre) => <span class="genre-tag">{genre.trim()}</span>)
           }
         </div>
-      </div>
-    </div>
-
-    <div class="details-panel">
-      <div class="details-content">
         <p class="description">{game.description}</p>
+        
+        {
+          game.steamUrl && (
+            <a
+              href={game.steamUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="steam-button"
+            >
+              <div class="btn-text-wrapper">
+                <span class="btn-text-primary">View on Steam</span>
+                <span class="btn-text-secondary">View on Steam</span>
+              </div>
+            </a>
+          )
+        }
+
         {
           galleryImages.length > 0 && (
             <div class="gallery">
@@ -106,7 +121,11 @@ const galleryImages = game.screenshots.slice(1);
     const mediaContainer = card.querySelector(".media-container");
     const detailsPanel = card.querySelector(".details-panel") as HTMLElement;
     const genresPanel = card.querySelector(".genres-panel") as HTMLElement;
-    const plusPath = card.querySelector(".plus-path");
+    const primaryTitle = card.querySelector(".overlay-info");
+    const secondaryTitle = card.querySelector(".secondary-title");
+    const secondaryMeta = card.querySelector(".secondary-meta");
+    const steamBtn = card.querySelector(".steam-button");
+    const categories = card.querySelector(".details-content .genres");
 
     const mainContent = card.querySelector(".main-content");
 
@@ -134,17 +153,25 @@ const galleryImages = game.screenshots.slice(1);
           },
           0,
         )
+        .to(primaryTitle, { opacity: 0, y: -20, duration: 0.4 }, 0)
+        .to(
+          [secondaryTitle, secondaryMeta],
+          { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.6, stagger: 0.1 },
+          0.3,
+        )
         .to(
           [
+            categories,
             card.querySelector(".description"),
+            steamBtn,
             ...Array.from(card.querySelectorAll(".gallery-img")),
-          ],
+          ].filter(Boolean),
           {
             opacity: 1,
             filter: "blur(0px)",
             y: 0,
-            stagger: 0.1,
-            duration: 0.8,
+            stagger: 0.05,
+            duration: 0.5,
             ease: "power2.out",
           },
           0.4,
@@ -154,12 +181,10 @@ const galleryImages = game.screenshots.slice(1);
           {
             height: "auto",
             opacity: 1,
-            filter: "blur(0px)",
             marginTop: "2rem",
           },
           0.3,
-        )
-        .to(plusPath, { rotation: 45, transformOrigin: "center center" }, 0);
+        );
     } else {
       // Mobile
       tl.set([detailsPanel, genresPanel], { display: "block" })
@@ -173,32 +198,37 @@ const galleryImages = game.screenshots.slice(1);
           },
           0,
         )
+        .to(primaryTitle, { opacity: 0, y: -20, duration: 0.4 }, 0)
+        .to(
+          [secondaryTitle, secondaryMeta],
+          { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.6, stagger: 0.1 },
+          0.2,
+        )
         .to(
           [
+            categories,
             card.querySelector(".description"),
+            steamBtn,
             ...Array.from(card.querySelectorAll(".gallery-img")),
-          ],
+          ].filter(Boolean),
           {
             opacity: 1,
             filter: "blur(0px)",
             y: 0,
-            stagger: 0.1,
-            duration: 0.6,
+            stagger: 0.05,
+            duration: 0.4,
           },
           0.2,
         )
-        .to(genresPanel, { height: "auto", opacity: 1, filter: "blur(0px)" }, 0)
-        .to(plusPath, { rotation: 45, transformOrigin: "center center" }, 0);
+        .to(genresPanel, { height: "auto", opacity: 1 }, 0);
     }
 
     btn?.addEventListener("click", (e) => {
       e.stopPropagation();
       if (!isOpen) {
         tl.play();
-        if (btnText) btnText.textContent = "View less";
       } else {
         tl.reverse();
-        if (btnText) btnText.textContent = "View more";
       }
       isOpen = !isOpen;
     });
@@ -272,7 +302,9 @@ const galleryImages = game.screenshots.slice(1);
       rgba(0, 0, 0, 0) 100%
     );
     display: flex;
-    align-items: flex-end;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
     padding: clamp(1.5rem, 3vw, 3rem);
   }
 
@@ -309,31 +341,67 @@ const galleryImages = game.screenshots.slice(1);
   .view-toggle-btn {
     align-self: flex-start;
     margin-top: 1.5rem;
-    background: #fff;
-    color: #000;
-    border: none;
-    padding: 0.9rem 2rem;
-    border-radius: 100px;
-    font-size: 0.95rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    cursor: pointer;
-    transition:
-      transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-      background 0.2s ease;
-  }
-
-  .view-toggle-btn:hover {
-    transform: scale(1.05);
-    background: #7f1d1d;
+    background: transparent;
     color: #fff;
+    border: none;
+    padding: 0;
+    font-size: 1.1rem;
+    font-family: "Cinzel Decorative", cursive;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    overflow: hidden;
+    height: 1.5rem;
   }
 
-  .btn-icon {
-    width: 20px;
-    height: 20px;
+  .btn-text-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
+  }
+
+  .view-toggle-btn:hover .btn-text-wrapper {
+    transform: translateY(-1.5rem);
+  }
+
+  .btn-text-primary,
+  .btn-text-secondary {
+    display: block;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    white-space: nowrap;
+  }
+
+  .btn-text-secondary {
+    color: #7f1d1d;
+  }
+
+  .secondary-title {
+    font-size: clamp(1.4rem, 3.5vw, 2rem);
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(20px);
+    will-change: transform, filter, opacity;
+  }
+
+  .secondary-meta {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(10px);
+    will-change: transform, filter, opacity;
+  }
+
+  .secondary-date {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 500;
   }
 
   /* Genres Panel */
@@ -363,6 +431,10 @@ const galleryImages = game.screenshots.slice(1);
     display: flex;
     flex-wrap: wrap;
     gap: 0.8rem;
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(20px);
+    will-change: transform, filter, opacity;
   }
 
   .genre-tag {
@@ -405,15 +477,15 @@ const galleryImages = game.screenshots.slice(1);
 
   @media (min-width: 768px) {
     .details-content {
-      padding: 3rem;
+      padding: 2.5rem;
     }
   }
 
   .description {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     line-height: 1.8;
     color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 3rem;
+    margin: 1rem 0 0.5rem 0;
     opacity: 0;
     filter: blur(10px);
     transform: translateY(20px);
@@ -421,10 +493,54 @@ const galleryImages = game.screenshots.slice(1);
   }
 
   .gallery {
-    margin-top: auto;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .steam-button {
+    align-self: flex-start;
+    background: transparent;
+    color: #fff;
+    border: none;
+    padding: 0;
+    font-size: 1.1rem;
+    font-family: "Cinzel Decorative", cursive;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    overflow: hidden;
+    height: 1.5rem;
+    display: inline-flex;
+    text-decoration: none;
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(20px);
+  }
+
+  .steam-button .btn-text-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
+  }
+
+  .steam-button:hover .btn-text-wrapper {
+    transform: translateY(-1.5rem);
+  }
+
+  .steam-button .btn-text-primary,
+  .steam-button .btn-text-secondary {
+    display: block;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    white-space: nowrap;
+  }
+
+  .steam-button .btn-text-secondary {
+    color: #7f1d1d;
   }
 
   .gallery-img {
