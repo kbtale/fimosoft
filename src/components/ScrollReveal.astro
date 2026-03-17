@@ -1,0 +1,167 @@
+---
+interface Props {
+  enableBlur?: boolean;
+  baseOpacity?: number;
+  baseRotation?: number;
+  blurStrength?: number;
+  containerClassName?: string;
+  textClassName?: string;
+  rotationEnd?: string;
+  wordAnimationEnd?: string;
+}
+
+const {
+  enableBlur = true,
+  baseOpacity = 0.1,
+  baseRotation = 3,
+  blurStrength = 4,
+  containerClassName = "",
+  textClassName = "",
+  rotationEnd = "bottom bottom",
+  wordAnimationEnd = "bottom bottom",
+} = Astro.props;
+---
+
+<div
+  class={`scroll-reveal-container ${containerClassName}`}
+  data-base-opacity={baseOpacity}
+  data-base-rotation={baseRotation}
+  data-blur-strength={blurStrength}
+  data-enable-blur={enableBlur}
+  data-rotation-end={rotationEnd}
+  data-word-animation-end={wordAnimationEnd}
+>
+  <h2 class="scroll-reveal">
+    <p class={`scroll-reveal-text ${textClassName}`}>
+      <slot />
+    </p>
+  </h2>
+</div>
+
+<style>
+  .scroll-reveal-container {
+    margin: 5vh 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 0 5vw;
+  }
+
+  .scroll-reveal {
+    max-width: 90rem;
+    width: 100%;
+    text-align: left;
+  }
+
+  .scroll-reveal-text {
+    font-size: clamp(1.5rem, 4vw, 3.5rem);
+    font-weight: 600;
+    color: #ffffff;
+    font-family: inherit;
+  }
+
+  :global(.scroll-reveal .word) {
+    display: inline-block;
+    white-space: pre;
+    will-change: opacity, filter, transform;
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  function initScrollReveal() {
+    const containers = document.querySelectorAll(".scroll-reveal-container");
+
+    containers.forEach((container) => {
+      const el = container.querySelector(".scroll-reveal") as HTMLElement;
+      if (!el) return;
+
+      const textEl = el.querySelector(".scroll-reveal-text");
+      if (!textEl) return;
+
+      // Wrap words
+      const text = textEl.textContent || "";
+      const words = text.split(/(\s+)/);
+      textEl.innerHTML = words
+        .map((word) => {
+          if (word.match(/^\s+$/)) return word;
+          return `<span class="word">${word}</span>`;
+        })
+        .join("");
+
+      const wordElements = el.querySelectorAll(".word");
+      const baseOpacity = parseFloat(
+        container.getAttribute("data-base-opacity") || "0.1",
+      );
+      const baseRotation = parseFloat(
+        container.getAttribute("data-base-rotation") || "3",
+      );
+      const blurStrength = parseFloat(
+        container.getAttribute("data-blur-strength") || "4",
+      );
+      const enableBlur = container.getAttribute("data-enable-blur") === "true";
+      const rotationEnd =
+        container.getAttribute("data-rotation-end") || "bottom bottom";
+      const wordAnimationEnd =
+        container.getAttribute("data-word-animation-end") || "bottom bottom";
+
+      // Container rotation
+      gsap.fromTo(
+        el,
+        { transformOrigin: "0% 50%", rotate: baseRotation },
+        {
+          ease: "none",
+          rotate: 0,
+          scrollTrigger: {
+            trigger: el,
+            start: "top bottom",
+            end: rotationEnd,
+            scrub: true,
+          },
+        },
+      );
+
+      // Word opacity stagger
+      gsap.fromTo(
+        wordElements,
+        { opacity: baseOpacity },
+        {
+          ease: "none",
+          opacity: 1,
+          stagger: 0.05,
+          scrollTrigger: {
+            trigger: el,
+            start: "top bottom-=20%",
+            end: wordAnimationEnd,
+            scrub: true,
+          },
+        },
+      );
+
+      // Word blur stagger
+      if (enableBlur) {
+        gsap.fromTo(
+          wordElements,
+          { filter: `blur(${blurStrength}px)` },
+          {
+            ease: "none",
+            filter: "blur(0px)",
+            stagger: 0.05,
+            scrollTrigger: {
+              trigger: el,
+              start: "top bottom-=35%",
+              end: wordAnimationEnd,
+              scrub: true,
+            },
+          },
+        );
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", initScrollReveal);
+</script>

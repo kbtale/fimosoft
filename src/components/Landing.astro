@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { translations, type Locale } from "../i18n/translations";
-
+import ScrollReveal from "./ScrollReveal.astro";
 interface Props {
   locale: Locale;
 }
@@ -46,7 +46,8 @@ const t = translations[locale];
       </div>
     </div>
 
-    <main class="main-content">
+    <!-- Hero Section -->
+    <main class="hero-section">
       <div class="content-wrapper">
         <div class="logo-ghost">
           <div class="word">FIMO</div>
@@ -62,20 +63,47 @@ const t = translations[locale];
         </div>
       </div>
     </main>
+
+    <!-- Scroll Content -->
+    <div class="scrolling-content">
+      <ScrollReveal
+        baseOpacity={0.1}
+        enableBlur={true}
+        baseRotation={3}
+        blurStrength={3}
+      >
+        We're working in the shadows to bring you something chilling...
+        <br />
+        The darkness hides secrets yet to be unveiled.
+      </ScrollReveal>
+
+      <section class="projects-placeholder">
+        <h3 class="projects-title">Upcoming Projects</h3>
+        <div class="project-cards">
+          <div class="card-skeleton">Project Alpha</div>
+          <div class="card-skeleton">Project Beta</div>
+          <div class="card-skeleton">Project Gamma</div>
+        </div>
+      </section>
+    </div>
   </div>
 </Layout>
 
-<div style="height: 200vh; background: #0c0c0c;"></div>
-
 <style>
   .landing-container {
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  .hero-section {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: clamp(1rem, 4vw, 3rem);
-    position: relative;
-    overflow: hidden;
+    width: 100%;
+    max-width: 90rem;
+    margin: 0 auto;
   }
 
   .noise-overlay {
@@ -117,6 +145,12 @@ const t = translations[locale];
     font-size: clamp(4.5rem, 14vw, 17rem);
     line-height: 0.8;
     width: clamp(16rem, 50vw, 65rem);
+  }
+
+  .scrolling-content {
+    position: relative;
+    z-index: 10;
+    margin-top: 20vh;
   }
 
   .main-content {
@@ -199,6 +233,62 @@ const t = translations[locale];
     opacity: 0;
     transform: translateY(20px);
   }
+
+  /* Projects Section Placeholder */
+  .projects-placeholder {
+    padding: 15vh 5vw;
+    max-width: 90rem;
+    margin: 0 auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .projects-title {
+    font-size: clamp(2rem, 5vw, 4rem);
+    margin-bottom: 3rem;
+    color: #ffffff;
+  }
+
+  .project-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .card-skeleton {
+    height: 400px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.02),
+      transparent
+    );
+    transform: translateX(-100%);
+    animation: shimmer 3s infinite;
+  }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
 </style>
 
 <script>
@@ -257,60 +347,65 @@ const t = translations[locale];
       ".letter",
     ) as NodeListOf<HTMLElement>;
     const spacing = 35;
-    const sidebarCenterX = 32;
 
     if (allLetters.length > 0) {
+      // Pin hero section during transition
+      const scrollTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".hero-section",
+          start: "top top",
+          end: "+=100%",
+          scrub: 0.5,
+          pin: true,
+          pinSpacing: false, // Allow content to scroll up immediately
+        },
+      });
+
+      // Capture element positions after entrance animation
       tl.then(() => {
         let cumulativeY = 32;
 
         allLetters.forEach((letter, index) => {
-          const startRect = letter.getBoundingClientRect();
-          const currentCenterX = startRect.left + startRect.width / 2;
-          const currentCenterY = startRect.top + startRect.height / 2;
+          const rect = letter.getBoundingClientRect();
 
-          const deltaX = sidebarCenterX - currentCenterX;
-          const deltaY = cumulativeY - currentCenterY;
+          // Destination: X-center=32, Y-center=cumulativeY
+          const targetX = 32 - (rect.left + rect.width / 2);
+          const targetY = cumulativeY - (rect.top + rect.height / 2);
 
-          gsap.to(letter, {
-            scrollTrigger: {
-              trigger: ".landing-container",
-              start: "top top",
-              end: "bottom top",
-              scrub: 0.5,
+          scrollTl.to(
+            letter,
+            {
+              x: targetX,
+              y: targetY,
+              rotation: 90,
+              scale: 0.2,
+              transformOrigin: "center center",
+              ease: "none",
             },
-            x: deltaX,
-            y: deltaY,
-            rotation: 90,
-            scale: 0.2,
-            transformOrigin: "center center",
-            ease: "none",
-          });
+            0,
+          );
 
-          // Determine gap for the NEXT letter
           const currentText = letter.textContent?.trim();
           const nextLetter = allLetters[index + 1];
           const nextText = nextLetter?.textContent?.trim();
 
           let gap = spacing;
           if (nextText === "I" || currentText === "I") {
-            gap = spacing * 0.75; // Reduce gap before and after "I"
+            gap = spacing * 0.75;
           }
-
           cumulativeY += gap;
         });
 
-        // Fade out the tagline on scroll
-        gsap.to(".tagline-block", {
-          scrollTrigger: {
-            trigger: ".landing-container",
-            start: "top top",
-            end: "20% top",
-            scrub: 0.5,
+        // Fade out tagline
+        scrollTl.to(
+          ".tagline-block",
+          {
+            opacity: 0,
+            x: 50,
+            ease: "power2.inOut",
           },
-          opacity: 0,
-          x: 50,
-          ease: "power2.inOut",
-        });
+          0,
+        );
       });
     }
   });
