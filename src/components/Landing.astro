@@ -233,9 +233,9 @@ const t = translations[locale];
 
   .tagline-word {
     display: inline-block;
-
     opacity: 0;
     transform: translateY(20px);
+    filter: blur(10px);
   }
 
   /* Projects Section Placeholder */
@@ -302,8 +302,15 @@ const t = translations[locale];
   gsap.registerPlugin(ScrollTrigger);
 
   document.addEventListener("DOMContentLoaded", () => {
+    // Prevent scrolling during initial entrance animation
+    document.body.style.overflow = "hidden";
+
     const tl = gsap.timeline({
       defaults: { ease: "power3.out" },
+      onComplete: () => {
+        // Restore scrolling once entrance animation finishes
+        document.body.style.overflow = "auto";
+      },
     });
 
     tl.to(".fimo .letter", {
@@ -341,6 +348,7 @@ const t = translations[locale];
         {
           y: 0,
           opacity: 1,
+          filter: "blur(0px)",
           duration: 0.8,
           stagger: 0.1,
         },
@@ -423,6 +431,7 @@ const t = translations[locale];
           {
             opacity: 0,
             x: 50,
+            filter: "blur(10px)",
             ease: "power2.inOut",
           },
           0,
