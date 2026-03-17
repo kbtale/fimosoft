@@ -12,12 +12,19 @@ const t = translations[locale];
 
 <Layout>
   <div class="landing-container">
-
-    <!-- Fixed Background Video -->
+    <!-- bg Video -->
     <div class="video-background">
-      <video autoplay muted loop playsinline class="bg-video">
+      <video
+        id="bg-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        class="bg-video-hidden"
+      >
         <source src="/videos/hero-bg.mp4" type="video/mp4" />
       </video>
+      <canvas id="dither-canvas"></canvas>
     </div>
 
     <div class="logo-fixed-layer">
@@ -118,13 +125,18 @@ const t = translations[locale];
     pointer-events: none;
   }
 
-  .bg-video {
+  #dither-canvas {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    opacity: 0.15;
   }
 
+  .bg-video-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
 
   .logo-fixed-layer {
     position: fixed;
@@ -165,7 +177,6 @@ const t = translations[locale];
     z-index: 10;
     margin-top: 20vh;
   }
-
 
   .content-wrapper {
     display: flex;
@@ -442,4 +453,78 @@ const t = translations[locale];
       });
     }
   });
+</script>
+
+<script>
+  // Halftone dither renderer for background video
+  const video = document.getElementById("bg-video") as HTMLVideoElement;
+  const canvas = document.getElementById("dither-canvas") as HTMLCanvasElement;
+  const ctx = canvas.getContext("2d")!;
+
+  const DOT_SPACING = 8;
+  const MAX_DOT_SIZE = 5;
+  const TARGET_FPS = 18;
+  const FPS_INTERVAL = 1000 / TARGET_FPS;
+
+  let lastFrameTime = 0;
+  let cols = 0;
+  let rows = 0;
+  let sampleCanvas: OffscreenCanvas;
+  let sampleCtx: OffscreenCanvasRenderingContext2D;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    cols = Math.ceil(canvas.width / DOT_SPACING);
+    rows = Math.ceil(canvas.height / DOT_SPACING);
+    sampleCanvas = new OffscreenCanvas(cols, rows);
+    sampleCtx = sampleCanvas.getContext("2d")!;
+  }
+
+  function drawHalftone(timestamp: number) {
+    requestAnimationFrame(drawHalftone);
+    if (timestamp - lastFrameTime < FPS_INTERVAL) return;
+    lastFrameTime = timestamp;
+
+    // persistence buffer
+    ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Sample video at low resolution (reuse pre-allocated canvas)
+    sampleCtx.drawImage(video, 0, 0, cols, rows);
+    const pixels = sampleCtx.getImageData(0, 0, cols, rows).data;
+
+    // Draw halftone dots as squareS
+    ctx.fillStyle = "#333333";
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        const i = (y * cols + x) * 4;
+        const brightness = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / 765;
+        const size = brightness * MAX_DOT_SIZE;
+
+        if (size > 0.5) {
+          const half = size * 0.5;
+          ctx.fillRect(
+            x * DOT_SPACING - half,
+            y * DOT_SPACING - half,
+            size,
+            size,
+          );
+        }
+      }
+    }
+  }
+
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
+  function startDither() {
+    requestAnimationFrame(drawHalftone);
+  }
+
+  if (!video.paused) {
+    startDither();
+  } else {
+    video.addEventListener("playing", startDither, { once: true });
+  }
 </script>
