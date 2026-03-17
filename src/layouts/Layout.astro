@@ -1,54 +1,154 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Fimosoft | Where nightmares take shape</title>
-		
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Fimosoft | Where nightmares take shape</title>
 
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap" rel="stylesheet">
-	</head>
-	<body>
-		<slot />
-	</body>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <slot />
+    <div id="custom-cursor">
+      <svg
+        viewBox="0 0 30 30"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="0.8"
+      >
+        <path
+          d="M15 7v16M7 15h16M14 7h2M14 23h2M7 14v2M23 14v2"
+          stroke-linecap="butt"></path>
+      </svg>
+    </div>
+
+    <script>
+      const cursor = document.getElementById("custom-cursor");
+
+      const updateCursor = (e: MouseEvent) => {
+        if (!cursor) return;
+        cursor.style.display = "block";
+        cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+      };
+
+      window.addEventListener("mousemove", updateCursor);
+      window.addEventListener("mousedown", () =>
+        cursor?.classList.add("cursor-active"),
+      );
+      window.addEventListener("mouseup", () =>
+        cursor?.classList.remove("cursor-active"),
+      );
+
+      // Event delegation for hover states
+      window.addEventListener("mouseover", (e) => {
+        const target = (e.target as HTMLElement).closest(
+          'a, button, [role="button"], .gallery-img, input[type="submit"], input[type="button"]',
+        );
+        if (target) {
+          cursor?.classList.add("cursor-hover");
+        } else {
+          cursor?.classList.remove("cursor-hover");
+        }
+      });
+
+      // Hide cursor when it leaves the window
+      document.addEventListener("mouseleave", () => {
+        if (cursor) cursor.style.display = "none";
+      });
+    </script>
+  </body>
 </html>
 
 <style is:global>
+  html,
+  body,
+  * {
+    cursor: none;
+  }
 
-	*, *::before, *::after {
-		box-sizing: border-box;
-		margin: 0;
-		padding: 0;
-	}
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 
+  :root {
+    --bg-color: #0c0c0c;
+    --text-color: #e5e5e5;
+    --selection-bg: #7f1d1d;
+    --selection-text: #ffffff;
+    --accent-red: #7f1d1d;
+  }
 
-	:root {
-		--bg-color: #0c0c0c;
-		--text-color: #e5e5e5;
-		--selection-bg: #7f1d1d;
-		--selection-text: #ffffff;
-	}
+  html,
+  body {
+    height: 100%;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: "Cinzel Decorative", cursive;
+    scrollbar-gutter: stable;
+  }
 
-	html, body {
-		height: 100%;
-		background-color: var(--bg-color);
-		color: var(--text-color);
-		font-family: 'Cinzel Decorative', cursive;
-		scrollbar-gutter: stable;
-	}
+  #custom-cursor {
+    display: none;
+    width: 30px;
+    height: 30px;
+    background-color: var(--accent-red);
+    border-radius: 50%;
+    position: fixed;
+    top: -15px;
+    left: -15px;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+    transition:
+      transform 0.1s ease-out,
+      background-color 0.3s ease;
+    color: #ffffff;
+    overflow: hidden;
+  }
 
+  #custom-cursor svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transition:
+      transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+      opacity 0.3s ease;
+    opacity: 0;
+    transform: scale(0);
+  }
 
-	::selection {
-		background-color: var(--selection-bg);
-		color: var(--selection-text);
-	}
+  #custom-cursor.cursor-hover {
+    background-color: #ffffff;
+  }
 
+  #custom-cursor.cursor-hover svg {
+    color: #000000;
+    opacity: 1;
+    transform: scale(1);
+  }
 
-	body {
-		overflow-x: hidden;
-	}
+  #custom-cursor.cursor-active {
+    transform: scale(0.85);
+  }
+
+  ::selection {
+    background-color: var(--selection-bg);
+    color: var(--selection-text);
+  }
+
+  body {
+    overflow-x: hidden;
+  }
 </style>
