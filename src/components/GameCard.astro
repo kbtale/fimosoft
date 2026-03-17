@@ -130,30 +130,63 @@ const galleryImages = game.screenshots.slice(1);
             width: "45%",
             height: "auto",
             opacity: 1,
-            filter: "blur(0px)",
             pointerEvents: "auto",
           },
           0,
         )
         .to(
+          [
+            card.querySelector(".description"),
+            ...Array.from(card.querySelectorAll(".gallery-img")),
+          ],
+          {
+            opacity: 1,
+            filter: "blur(0px)",
+            y: 0,
+            stagger: 0.1,
+            duration: 0.8,
+            ease: "power2.out",
+          },
+          0.4,
+        )
+        .to(
           genresPanel,
-          { height: "auto", opacity: 1, filter: "blur(0px)", marginTop: "2rem" },
+          {
+            height: "auto",
+            opacity: 1,
+            filter: "blur(0px)",
+            marginTop: "2rem",
+          },
           0.3,
         )
         .to(plusPath, { rotation: 45, transformOrigin: "center center" }, 0);
     } else {
       // Mobile
-      tl.set([detailsPanel, genresPanel], { display: "block" }).to(
-        detailsPanel,
-        {
-          height: "auto",
-          opacity: 1,
-          filter: "blur(0px)",
-          marginTop: "2rem",
-          pointerEvents: "auto",
-        },
-        0,
-      )
+      tl.set([detailsPanel, genresPanel], { display: "block" })
+        .to(
+          detailsPanel,
+          {
+            height: "auto",
+            opacity: 1,
+            marginTop: "2rem",
+            pointerEvents: "auto",
+          },
+          0,
+        )
+        .to(
+          [
+            card.querySelector(".description"),
+            ...Array.from(card.querySelectorAll(".gallery-img")),
+          ],
+          {
+            opacity: 1,
+            filter: "blur(0px)",
+            y: 0,
+            stagger: 0.1,
+            duration: 0.6,
+          },
+          0.2,
+        )
         .to(genresPanel, { height: "auto", opacity: 1, filter: "blur(0px)" }, 0)
         .to(plusPath, { rotation: 45, transformOrigin: "center center" }, 0);
     }
@@ -310,13 +343,11 @@ const galleryImages = game.screenshots.slice(1);
     opacity: 0;
     display: none;
     overflow: hidden;
-    filter: blur(10px);
-    will-change: filter;
   }
 
   @media (min-width: 768px) {
     .genres-panel {
-      width: 90%; /* Match media container initial centering */
+      width: 90%;
     }
   }
 
@@ -355,8 +386,6 @@ const galleryImages = game.screenshots.slice(1);
     pointer-events: none;
     background: rgba(255, 255, 255, 0.02);
     border-radius: 0 12px 12px 0;
-    filter: blur(10px);
-    will-change: filter;
   }
 
   @media (max-width: 767px) {
@@ -385,6 +414,10 @@ const galleryImages = game.screenshots.slice(1);
     line-height: 1.8;
     color: rgba(255, 255, 255, 0.9);
     margin-bottom: 3rem;
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(20px);
+    will-change: transform, filter, opacity;
   }
 
   .gallery {
@@ -400,6 +433,10 @@ const galleryImages = game.screenshots.slice(1);
     object-fit: cover;
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(20px);
+    will-change: transform, filter, opacity;
     transition:
       transform 0.3s ease,
       border-color 0.3s ease;
