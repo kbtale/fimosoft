@@ -65,6 +65,8 @@ const t = translations[locale];
   </div>
 </Layout>
 
+<div style="height: 200vh; background: #0c0c0c;"></div>
+
 <style>
   .landing-container {
     min-height: 100vh;
@@ -201,6 +203,9 @@ const t = translations[locale];
 
 <script>
   import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
 
   document.addEventListener("DOMContentLoaded", () => {
     const tl = gsap.timeline({
@@ -247,5 +252,66 @@ const t = translations[locale];
         },
         "-=0.4",
       );
+
+    const allLetters = document.querySelectorAll(
+      ".letter",
+    ) as NodeListOf<HTMLElement>;
+    const spacing = 35;
+    const sidebarCenterX = 32;
+
+    if (allLetters.length > 0) {
+      tl.then(() => {
+        let cumulativeY = 32;
+
+        allLetters.forEach((letter, index) => {
+          const startRect = letter.getBoundingClientRect();
+          const currentCenterX = startRect.left + startRect.width / 2;
+          const currentCenterY = startRect.top + startRect.height / 2;
+
+          const deltaX = sidebarCenterX - currentCenterX;
+          const deltaY = cumulativeY - currentCenterY;
+
+          gsap.to(letter, {
+            scrollTrigger: {
+              trigger: ".landing-container",
+              start: "top top",
+              end: "bottom top",
+              scrub: 0.5,
+            },
+            x: deltaX,
+            y: deltaY,
+            rotation: 90,
+            scale: 0.2,
+            transformOrigin: "center center",
+            ease: "none",
+          });
+
+          // Determine gap for the NEXT letter
+          const currentText = letter.textContent?.trim();
+          const nextLetter = allLetters[index + 1];
+          const nextText = nextLetter?.textContent?.trim();
+
+          let gap = spacing;
+          if (nextText === "I" || currentText === "I") {
+            gap = spacing * 0.75; // Reduce gap before and after "I"
+          }
+
+          cumulativeY += gap;
+        });
+
+        // Fade out the tagline on scroll
+        gsap.to(".tagline-block", {
+          scrollTrigger: {
+            trigger: ".landing-container",
+            start: "top top",
+            end: "20% top",
+            scrub: 0.5,
+          },
+          opacity: 0,
+          x: 50,
+          ease: "power2.inOut",
+        });
+      });
+    }
   });
 </script>
