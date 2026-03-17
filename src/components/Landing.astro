@@ -90,9 +90,7 @@ const t = translations[locale];
       <section class="projects-placeholder">
         <h3 class="projects-title">{t.gamesTitle}</h3>
         <div class="project-cards">
-          {t.games.map((game) => (
-            <GameCard game={game} />
-          ))}
+          {t.games.map((game) => <GameCard game={game} />)}
         </div>
       </section>
     </div>
@@ -268,11 +266,10 @@ const t = translations[locale];
   }
 
   .project-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6rem;
   }
-
 </style>
 
 <script>
