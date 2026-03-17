@@ -10,7 +10,10 @@ export interface GameContent {
 
 export interface Game {
   id: string;
-  content: Record<Locale, GameContent>;
-  mainMedia: string;
+  title: string;
+  genre: string;
+  releaseDate: string;
+  description: string;
+  videoUrl?: string;
   screenshots: string[];
 }

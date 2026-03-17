@@ -1,0 +1,182 @@
+---
+import type { Game } from "../types/game";
+
+interface Props {
+  game: Game;
+}
+
+const { game } = Astro.props;
+const hasVideo = !!game.videoUrl;
+const coverImage = game.screenshots.length > 0 ? game.screenshots[0] : "";
+const galleryImages = game.screenshots.slice(1);
+---
+
+<article class="game-card">
+  <div class="media-container">
+    {hasVideo ? (
+      <video class="hero-media" autoplay muted loop playsinline poster={coverImage}>
+        <source src={game.videoUrl} type="video/mp4" />
+      </video>
+    ) : (
+      <img class="hero-media" src={coverImage} alt={game.title} loading="lazy" />
+    )}
+    <div class="media-overlay"></div>
+  </div>
+
+  <div class="content">
+    <header class="card-header">
+      <h3 class="title">{game.title}</h3>
+      <div class="meta">
+        <span class="release-date">{game.releaseDate}</span>
+      </div>
+    </header>
+
+    <div class="genres">
+      {game.genre.split(",").map((genre) => (
+        <span class="genre-tag">{genre.trim()}</span>
+      ))}
+    </div>
+
+    <p class="description">{game.description}</p>
+
+    {galleryImages.length > 0 && (
+      <div class="gallery">
+        {galleryImages.map((img) => (
+          <img class="gallery-img" src={img} alt={`Screenshot of ${game.title}`} loading="lazy" />
+        ))}
+      </div>
+    )}
+  </div>
+</article>
+
+<style>
+  .game-card {
+    background: rgba(10, 10, 10, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 500px;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .game-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .media-container {
+    position: relative;
+    height: 250px;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .hero-media {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s ease;
+  }
+
+  .game-card:hover .hero-media {
+    transform: scale(1.05);
+  }
+
+  .media-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10, 10, 10, 1) 0%, rgba(10, 10, 10, 0) 100%);
+  }
+
+  .content {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    position: relative;
+    z-index: 2;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .title {
+    font-size: clamp(1.5rem, 2vw, 2rem);
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  .meta {
+    display: flex;
+    flex-shrink: 0;
+  }
+
+  .release-date {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .genre-tag {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #d1d5db;
+    background: rgba(127, 29, 29, 0.2);
+    border: 1px solid rgba(127, 29, 29, 0.3);
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+  }
+
+  .description {
+    color: #a1a1aa;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+    flex-grow: 1;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 0.5rem;
+    margin-top: auto;
+  }
+
+  .gallery-img {
+    width: 100%;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    opacity: 0.6;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .gallery-img:hover {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+</style>

@@ -19,6 +19,7 @@ dist-ssr
 .env*
 *.md
 !readme.md
+*.mp4
 
 # Editor directories and files
 .vscode/*

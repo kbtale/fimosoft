@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import { translations, type Locale } from "../i18n/translations";
 import ScrollReveal from "./ScrollReveal.astro";
+import GameCard from "./GameCard.astro";
 interface Props {
   locale: Locale;
 }
@@ -12,10 +13,19 @@ const t = translations[locale];
 
 <Layout>
   <div class="landing-container">
-    <div
-      class="noise-overlay"
-      style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;);"
-    >
+    <!-- bg Video -->
+    <div class="video-background">
+      <video
+        id="bg-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        class="bg-video-hidden"
+      >
+        <source src="/videos/hero-bg.mp4" type="video/mp4" />
+      </video>
+      <canvas id="dither-canvas"></canvas>
     </div>
 
     <div class="logo-fixed-layer">
@@ -78,11 +88,11 @@ const t = translations[locale];
       </ScrollReveal>
 
       <section class="projects-placeholder">
-        <h3 class="projects-title">Upcoming Projects</h3>
+        <h3 class="projects-title">{t.gamesTitle}</h3>
         <div class="project-cards">
-          <div class="card-skeleton">Project Alpha</div>
-          <div class="card-skeleton">Project Beta</div>
-          <div class="card-skeleton">Project Gamma</div>
+          {t.games.map((game) => (
+            <GameCard game={game} />
+          ))}
         </div>
       </section>
     </div>
@@ -104,23 +114,35 @@ const t = translations[locale];
     width: 100%;
     max-width: 90rem;
     margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
   }
 
-  .noise-overlay {
-    pointer-events: none;
+  .video-background {
     position: fixed;
     inset: 0;
-    z-index: 50;
-    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  #dither-canvas {
     width: 100%;
-    opacity: 0.03;
-    mix-blend-mode: overlay;
+    height: 100%;
+  }
+
+  .bg-video-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
   }
 
   .logo-fixed-layer {
     position: fixed;
     inset: 0;
-    z-index: 100;
+    z-index: 20;
     pointer-events: none;
     display: flex;
     align-items: center;
@@ -157,21 +179,15 @@ const t = translations[locale];
     margin-top: 20vh;
   }
 
-  .main-content {
-    position: relative;
-    z-index: 10;
-    width: 100%;
-    max-width: 90rem; /* 1440px */
-    display: flex;
-    justify-content: center;
-  }
-
   .content-wrapper {
     display: flex;
     align-items: flex-end;
     justify-content: center;
     width: 100%;
     gap: clamp(1rem, 4vw, 4rem);
+    position: relative;
+    z-index: 10;
+    max-width: 90rem;
   }
 
   .logo-block {
@@ -243,7 +259,6 @@ const t = translations[locale];
     padding: 15vh 5vw;
     max-width: 90rem;
     margin: 0 auto;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .projects-title {
@@ -258,41 +273,6 @@ const t = translations[locale];
     gap: 2rem;
   }
 
-  .card-skeleton {
-    height: 400px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255, 255, 255, 0.2);
-    font-size: 1.2rem;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .card-skeleton::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.02),
-      transparent
-    );
-    transform: translateX(-100%);
-    animation: shimmer 3s infinite;
-  }
-
-  @keyframes shimmer {
-    100% {
-      transform: translateX(100%);
-    }
-  }
 </style>
 
 <script>
@@ -439,4 +419,78 @@ const t = translations[locale];
       });
     }
   });
+</script>
+
+<script>
+  // Halftone dither renderer for background video
+  const video = document.getElementById("bg-video") as HTMLVideoElement;
+  const canvas = document.getElementById("dither-canvas") as HTMLCanvasElement;
+  const ctx = canvas.getContext("2d")!;
+
+  const DOT_SPACING = 8;
+  const MAX_DOT_SIZE = 5;
+  const TARGET_FPS = 18;
+  const FPS_INTERVAL = 1000 / TARGET_FPS;
+
+  let lastFrameTime = 0;
+  let cols = 0;
+  let rows = 0;
+  let sampleCanvas: OffscreenCanvas;
+  let sampleCtx: OffscreenCanvasRenderingContext2D;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    cols = Math.ceil(canvas.width / DOT_SPACING);
+    rows = Math.ceil(canvas.height / DOT_SPACING);
+    sampleCanvas = new OffscreenCanvas(cols, rows);
+    sampleCtx = sampleCanvas.getContext("2d")!;
+  }
+
+  function drawHalftone(timestamp: number) {
+    requestAnimationFrame(drawHalftone);
+    if (timestamp - lastFrameTime < FPS_INTERVAL) return;
+    lastFrameTime = timestamp;
+
+    // persistence buffer
+    ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Sample video at low resolution (reuse pre-allocated canvas)
+    sampleCtx.drawImage(video, 0, 0, cols, rows);
+    const pixels = sampleCtx.getImageData(0, 0, cols, rows).data;
+
+    // Draw halftone dots as squareS
+    ctx.fillStyle = "#333333";
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        const i = (y * cols + x) * 4;
+        const brightness = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / 765;
+        const size = brightness * MAX_DOT_SIZE;
+
+        if (size > 0.5) {
+          const half = size * 0.5;
+          ctx.fillRect(
+            x * DOT_SPACING - half,
+            y * DOT_SPACING - half,
+            size,
+            size,
+          );
+        }
+      }
+    }
+  }
+
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
+  function startDither() {
+    requestAnimationFrame(drawHalftone);
+  }
+
+  if (!video.paused) {
+    startDither();
+  } else {
+    video.addEventListener("playing", startDither, { once: true });
+  }
 </script>
