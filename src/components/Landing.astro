@@ -1,9 +1,9 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { translations, type Locale } from '../i18n/translations';
+import Layout from "../layouts/Layout.astro";
+import { translations, type Locale } from "../i18n/translations";
 
 interface Props {
-	locale: Locale;
+  locale: Locale;
 }
 
 const { locale } = Astro.props;
@@ -11,197 +11,307 @@ const t = translations[locale];
 ---
 
 <Layout>
-	<div class="landing-container">
-		
-		<div
-			class="noise-overlay"
-			style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;);"
-		></div>
-		
-		<main class="main-content">
-			<div class="content-wrapper">
-				
+  <div class="landing-container">
+    <div
+      class="noise-overlay"
+      style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;);"
+    >
+    </div>
 
-				<div class="logo-block text-white">
-					<div class="word fimo">
-						<span class="letter">F</span>
-						<span class="letter">I</span>
-						<span class="letter">M</span>
-						<span class="letter">O</span>
-					</div>
-					<div class="word soft">
-						<span class="letter">S</span>
-						<span class="letter">O</span>
-						<span class="letter">F</span>
-						<span class="letter">T</span>
-					</div>
-				</div>
+    <div class="logo-fixed-layer">
+      <div class="logo-fixed-wrapper">
+        <div class="logo-block text-white">
+          <div class="word fimo">
+            <span class="letter">F</span>
+            <span class="letter">I</span>
+            <span class="letter">M</span>
+            <span class="letter">O</span>
+          </div>
+          <div class="word soft">
+            <span class="letter">S</span>
+            <span class="letter">O</span>
+            <span class="letter">F</span>
+            <span class="letter">T</span>
+          </div>
+        </div>
+        <div
+          class="tagline-block"
+          style="visibility: hidden; pointer-events: none;"
+        >
+          <div class="vertical-divider"></div>
+          <div class="tagline-text">
+            {t.tagline.map((word) => <span class="tagline-word">{word}</span>)}
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <main class="main-content">
+      <div class="content-wrapper">
+        <div class="logo-ghost">
+          <div class="word">FIMO</div>
+          <div class="word">SOFT</div>
+        </div>
 
-				<div class="tagline-block">
-					
+        <div class="tagline-block">
+          <div class="vertical-divider"></div>
 
-					<div class="vertical-divider"></div>
-					
-
-					<div class="tagline-text">
-						{t.tagline.map((word) => (
-							<span class="tagline-word">{word}</span>
-						))}
-					</div>
-
-				</div>
-			</div>
-		</main>
-	</div>
+          <div class="tagline-text">
+            {t.tagline.map((word) => <span class="tagline-word">{word}</span>)}
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
 </Layout>
 
+<div style="height: 200vh; background: #0c0c0c;"></div>
+
 <style>
+  .landing-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1rem, 4vw, 3rem);
+    position: relative;
+    overflow: hidden;
+  }
 
-	.landing-container {
-		min-height: 100vh;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: clamp(1rem, 4vw, 3rem);
-		position: relative;
-		overflow: hidden;
-	}
+  .noise-overlay {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    height: 100%;
+    width: 100%;
+    opacity: 0.03;
+    mix-blend-mode: overlay;
+  }
 
-	.noise-overlay {
-		pointer-events: none;
-		position: fixed;
-		inset: 0;
-		z-index: 50;
-		height: 100%;
-		width: 100%;
-		opacity: 0.03;
-		mix-blend-mode: overlay;
-	}
+  .logo-fixed-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1rem, 4vw, 3rem);
+  }
 
-	.main-content {
-		position: relative;
-		z-index: 10;
-		width: 100%;
-		max-width: 90rem; /* 1440px */
-		display: flex;
-		justify-content: center;
-	}
+  .logo-fixed-wrapper {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100%;
+    gap: clamp(1rem, 4vw, 4rem);
+    max-width: 90rem;
+    position: relative;
+  }
 
-	.content-wrapper {
-		display: flex;
-		align-items: flex-end;
-		justify-content: center;
-		width: 100%;
-		gap: clamp(1rem, 4vw, 4rem);
-	}
+  .logo-ghost {
+    visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    font-size: clamp(4.5rem, 14vw, 17rem);
+    line-height: 0.8;
+    width: clamp(16rem, 50vw, 65rem);
+  }
 
+  .main-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 90rem; /* 1440px */
+    display: flex;
+    justify-content: center;
+  }
 
-	.logo-block {
-		display: flex;
-		flex-direction: column;
-		font-weight: 700;
-		color: #ffffff;
-		font-size: clamp(4.5rem, 14vw, 17rem);
-		line-height: 0.8;
-		width: clamp(16rem, 50vw, 65rem);
-		filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
-	}
+  .content-wrapper {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100%;
+    gap: clamp(1rem, 4vw, 4rem);
+  }
 
-	.word {
-		display: flex;
-		justify-content: space-between;
-		width: 100%;
-	}
-	
-	.soft {
-		margin-top: clamp(0.5rem, 2vw, 2rem);
-	}
+  .logo-block {
+    display: flex;
+    flex-direction: column;
+    font-weight: 700;
+    color: #ffffff;
+    font-size: clamp(4.5rem, 14vw, 17rem);
+    line-height: 0.8;
+    width: clamp(16rem, 50vw, 65rem);
+    filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
+    pointer-events: auto;
+  }
 
-	.letter {
-		display: inline-block;
+  .word {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
 
-		opacity: 0;
-		transform: translateY(50px);
-		filter: blur(10px);
-	}
+  .soft {
+    margin-top: clamp(0.5rem, 2vw, 2rem);
+  }
 
+  .letter {
+    display: inline-block;
 
-	.tagline-block {
-		display: flex;
-		align-items: flex-end;
-		padding-bottom: clamp(0.2rem, 0.8vw, 1.5rem);
-		gap: clamp(0.8rem, 2.5vw, 3rem);
-	}
+    opacity: 0;
+    transform: translateY(50px);
+    filter: blur(10px);
+  }
 
-	.vertical-divider {
-		width: clamp(2px, 0.4vw, 5px);
-		background-color: #7f1d1d;
-		height: clamp(3.5rem, 11vw, 14rem);
-		filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+  .tagline-block {
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: clamp(0.2rem, 0.8vw, 1.5rem);
+    gap: clamp(0.8rem, 2.5vw, 3rem);
+  }
 
-		transform-origin: top;
-		transform: scaleY(0);
-	}
+  .vertical-divider {
+    width: clamp(2px, 0.4vw, 5px);
+    background-color: #7f1d1d;
+    height: clamp(3.5rem, 11vw, 14rem);
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+      drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 
-	.tagline-text {
-		display: flex;
-		flex-direction: column;
-		color: #d1d5db;
-		line-height: 1.1;
-		letter-spacing: 0.025em;
-		font-size: clamp(1.1rem, 3.2vw, 4.5rem);
-	}
+    transform-origin: top;
+    transform: scaleY(0);
+  }
 
-	.tagline-word {
-		display: inline-block;
+  .tagline-text {
+    display: flex;
+    flex-direction: column;
+    color: #d1d5db;
+    line-height: 1.1;
+    letter-spacing: 0.025em;
+    font-size: clamp(1.1rem, 3.2vw, 4.5rem);
+  }
 
-		opacity: 0;
-		transform: translateY(20px);
-	}
+  .tagline-word {
+    display: inline-block;
+
+    opacity: 0;
+    transform: translateY(20px);
+  }
 </style>
 
 <script>
-	import { gsap } from "gsap";
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+  gsap.registerPlugin(ScrollTrigger);
 
-	document.addEventListener("DOMContentLoaded", () => {
-		
+  document.addEventListener("DOMContentLoaded", () => {
+    const tl = gsap.timeline({
+      defaults: { ease: "power3.out" },
+    });
 
-		const tl = gsap.timeline({
-			defaults: { ease: "power3.out" }
-		});
+    tl.to(".fimo .letter", {
+      y: 0,
+      opacity: 1,
+      filter: "blur(0px)",
+      duration: 0.8,
+      stagger: 0.1,
+    })
 
-		tl.to(".fimo .letter", {
-			y: 0,
-			opacity: 1,
-			filter: "blur(0px)",
-			duration: 0.8,
-			stagger: 0.1,
-		})
-		
+      .to(
+        ".soft .letter",
+        {
+          y: 0,
+          opacity: 1,
+          filter: "blur(0px)",
+          duration: 0.8,
+          stagger: 0.1,
+        },
+        "-=0.6",
+      )
 
-		.to(".soft .letter", {
-			y: 0,
-			opacity: 1,
-			filter: "blur(0px)",
-			duration: 0.8,
-			stagger: 0.1,
-		}, "-=0.6")
+      .to(
+        ".vertical-divider",
+        {
+          scaleY: 1,
+          duration: 0.8,
+          ease: "expo.inOut",
+        },
+        "-=0.6",
+      )
 
+      .to(
+        ".tagline-word",
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.1,
+        },
+        "-=0.4",
+      );
 
-		.to(".vertical-divider", {
-			scaleY: 1,
-			duration: 0.8,
-			ease: "expo.inOut"
-		}, "-=0.6")
+    const allLetters = document.querySelectorAll(
+      ".letter",
+    ) as NodeListOf<HTMLElement>;
+    const spacing = 35;
+    const sidebarCenterX = 32;
 
+    if (allLetters.length > 0) {
+      tl.then(() => {
+        let cumulativeY = 32;
 
-		.to(".tagline-word", {
-			y: 0,
-			opacity: 1,
-			duration: 0.8,
-			stagger: 0.1,
-		}, "-=0.4");
-	});
+        allLetters.forEach((letter, index) => {
+          const startRect = letter.getBoundingClientRect();
+          const currentCenterX = startRect.left + startRect.width / 2;
+          const currentCenterY = startRect.top + startRect.height / 2;
+
+          const deltaX = sidebarCenterX - currentCenterX;
+          const deltaY = cumulativeY - currentCenterY;
+
+          gsap.to(letter, {
+            scrollTrigger: {
+              trigger: ".landing-container",
+              start: "top top",
+              end: "bottom top",
+              scrub: 0.5,
+            },
+            x: deltaX,
+            y: deltaY,
+            rotation: 90,
+            scale: 0.2,
+            transformOrigin: "center center",
+            ease: "none",
+          });
+
+          // Determine gap for the NEXT letter
+          const currentText = letter.textContent?.trim();
+          const nextLetter = allLetters[index + 1];
+          const nextText = nextLetter?.textContent?.trim();
+
+          let gap = spacing;
+          if (nextText === "I" || currentText === "I") {
+            gap = spacing * 0.75; // Reduce gap before and after "I"
+          }
+
+          cumulativeY += gap;
+        });
+
+        // Fade out the tagline on scroll
+        gsap.to(".tagline-block", {
+          scrollTrigger: {
+            trigger: ".landing-container",
+            start: "top top",
+            end: "20% top",
+            scrub: 0.5,
+          },
+          opacity: 0,
+          x: 50,
+          ease: "power2.inOut",
+        });
+      });
+    }
+  });
 </script>
