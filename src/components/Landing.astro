@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import { translations, type Locale } from "../i18n/translations";
 import ScrollReveal from "./ScrollReveal.astro";
+import GameCard from "./GameCard.astro";
 interface Props {
   locale: Locale;
 }
@@ -89,9 +90,9 @@ const t = translations[locale];
       <section class="projects-placeholder">
         <h3 class="projects-title">{t.gamesTitle}</h3>
         <div class="project-cards">
-          <div class="card-skeleton">Project Alpha</div>
-          <div class="card-skeleton">Project Beta</div>
-          <div class="card-skeleton">Project Gamma</div>
+          {t.games.map((game) => (
+            <GameCard game={game} />
+          ))}
         </div>
       </section>
     </div>
@@ -272,41 +273,6 @@ const t = translations[locale];
     gap: 2rem;
   }
 
-  .card-skeleton {
-    height: 400px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255, 255, 255, 0.2);
-    font-size: 1.2rem;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .card-skeleton::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.02),
-      transparent
-    );
-    transform: translateX(-100%);
-    animation: shimmer 3s infinite;
-  }
-
-  @keyframes shimmer {
-    100% {
-      transform: translateX(100%);
-    }
-  }
 </style>
 
 <script>
