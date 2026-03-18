@@ -137,6 +137,32 @@
     scrollbar-gutter: stable;
   }
 
+  ::-webkit-scrollbar {
+    width: 24px;
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    background-image: url("/scroll.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    border-radius: 0;
+  }
+
+  /* Firefox fallback */
+  @supports (-moz-appearance: none) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #7f1d1d var(--bg-color);
+    }
+  }
+
   /* Lenis CSS */
   html.lenis,
   html.lenis body {

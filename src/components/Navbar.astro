@@ -9,7 +9,7 @@ const { locale } = Astro.props;
 const t = translations[locale];
 const otherLocale = locale === "en" ? "es" : "en";
 const langLink = otherLocale === "en" ? "/" : "/es/";
-const langLabel = otherLocale.toUpperCase();
+const langLabel = locale.toUpperCase();
 ---
 
 <nav class="navbar">
