@@ -5,6 +5,24 @@ export const translations = {
     title: "Fimosoft | Where nightmares take shape",
     tagline: ["Where", "Nightmares", "Take shape"],
     gamesTitle: "Our Games",
+    nav: {
+      contact: "Contact Us",
+      language: "ES"
+    },
+    contact: {
+      title: "Contact Us",
+      socials: {
+        x: "https://x.com/fimosoft",
+        instagram: "https://instagram.com/fimosoft",
+        tiktok: "https://tiktok.com/@fimosoft",
+        youtube: "https://youtube.com/@fimosoft",
+        email: "mailto:fimosoftgames@outlook.com"
+      },
+      footer: {
+        copyright: "© 2026 FIMOSOFT",
+        rights: "ALL NIGHTMARES RESERVED"
+      }
+    },
     games: [
       {
         id: "prologue",
@@ -40,6 +58,24 @@ export const translations = {
     title: "Fimosoft | Donde las pesadillas toman forma",
     tagline: ["Donde", "Las pesadillas", "Toman forma"],
     gamesTitle: "Nuestros Juegos",
+    nav: {
+      contact: "Contacto",
+      language: "EN"
+    },
+    contact: {
+      title: "Contáctanos",
+      socials: {
+        x: "https://x.com/fimosoft",
+        instagram: "https://instagram.com/fimosoft",
+        tiktok: "https://tiktok.com/@fimosoft",
+        youtube: "https://youtube.com/@fimosoft",
+        email: "mailto:fimosoftgames@outlook.com"
+      },
+      footer: {
+        copyright: "© 2026 FIMOSOFT",
+        rights: "TODAS LAS PESADILLAS RESERVADAS"
+      }
+    },
     games: [
       {
         id: "prologue",

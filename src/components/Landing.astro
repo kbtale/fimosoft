@@ -3,6 +3,8 @@ import Layout from "../layouts/Layout.astro";
 import { translations, type Locale } from "../i18n/translations";
 import ScrollReveal from "./ScrollReveal.astro";
 import GameCard from "./GameCard.astro";
+import Navbar from "./Navbar.astro";
+import Contact from "./Contact.astro";
 interface Props {
   locale: Locale;
 }
@@ -12,6 +14,7 @@ const t = translations[locale];
 ---
 
 <Layout>
+  <Navbar locale={locale} />
   <div class="landing-container">
     <!-- bg Video -->
     <div class="video-background">
@@ -93,6 +96,8 @@ const t = translations[locale];
           {t.games.map((game) => <GameCard game={game} />)}
         </div>
       </section>
+
+      <Contact locale={locale} />
     </div>
   </div>
 </Layout>

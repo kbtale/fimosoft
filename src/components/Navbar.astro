@@ -1,0 +1,99 @@
+---
+import { translations, type Locale } from "../i18n/translations";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = translations[locale];
+const otherLocale = locale === "en" ? "es" : "en";
+const langLink = otherLocale === "en" ? "/" : "/es/";
+const langLabel = otherLocale.toUpperCase();
+---
+
+<nav class="navbar">
+  <div class="nav-links">
+    <a href="#contact" class="nav-btn">
+      <div class="btn-text-wrapper">
+        <span class="btn-text-primary">{t.nav.contact}</span>
+        <span class="btn-text-secondary">{t.nav.contact}</span>
+      </div>
+    </a>
+    <div class="nav-divider"></div>
+    <a href={langLink} class="nav-btn lang-toggle">
+      <div class="btn-text-wrapper">
+        <span class="btn-text-primary">{langLabel}</span>
+        <span class="btn-text-secondary">{langLabel}</span>
+      </div>
+    </a>
+  </div>
+</nav>
+
+<style>
+  .navbar {
+    position: fixed;
+    top: 2rem;
+    right: 3rem;
+    z-index: 100;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .nav-divider {
+    width: 1px;
+    height: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .nav-btn {
+    text-decoration: none;
+    color: #fff;
+    font-family: "Cinzel Decorative", cursive;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    height: 1.2rem;
+    overflow: hidden;
+    display: block;
+  }
+
+  .btn-text-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .nav-btn:hover .btn-text-wrapper {
+    transform: translateY(-1.2rem);
+  }
+
+  .btn-text-primary,
+  .btn-text-secondary {
+    display: block;
+    height: 1.2rem;
+    line-height: 1.2rem;
+    white-space: nowrap;
+  }
+
+  .btn-text-secondary {
+    color: #7f1d1d;
+  }
+
+  @media (max-width: 767px) {
+    .navbar {
+      top: 1.5rem;
+      right: 1.5rem;
+    }
+    
+    .nav-links {
+      gap: 1rem;
+    }
+  }
+</style>

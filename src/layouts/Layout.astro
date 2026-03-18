@@ -13,12 +13,28 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap"
       rel="stylesheet"
     />
+    <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
     <script is:inline>
       if ("scrollRestoration" in history) {
         history.scrollRestoration = "manual";
       }
       window.scrollTo(0, 0);
-      window.addEventListener("DOMContentLoaded", () => window.scrollTo(0, 0));
+
+      // Initialize Lenis
+      const lenis = new Lenis();
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      // Handle internal links for Lenis
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          lenis.scrollTo(this.getAttribute("href"));
+        });
+      });
     </script>
   </head>
   <body>
@@ -103,6 +119,28 @@
     color: var(--text-color);
     font-family: "Cinzel Decorative", cursive;
     scrollbar-gutter: stable;
+  }
+
+  /* Lenis CSS */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  .lenis.lenis-scrolling iframe {
+    pointer-events: none;
   }
 
   #custom-cursor {

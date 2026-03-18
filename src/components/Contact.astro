@@ -1,0 +1,476 @@
+---
+import { translations, type Locale } from "../i18n/translations";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = translations[locale];
+const emailLabel = "fimosoftgames@outlook.com";
+---
+
+<section id="contact" class="contact-section">
+  <div class="contact-container">
+    <div class="contact-content">
+      <h3 class="projects-title section-title">{t.contact.title}</h3>
+
+      <div class="social-links">
+        <a
+          href={t.contact.socials.x}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-btn"
+          aria-label="X (Twitter)"
+        >
+          <div class="btn-icon-wrapper">
+            <div class="btn-icon-primary">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+                ></path>
+              </svg>
+            </div>
+            <div class="btn-icon-secondary">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a
+          href={t.contact.socials.instagram}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-btn"
+          aria-label="Instagram"
+        >
+          <div class="btn-icon-wrapper">
+            <div class="btn-icon-primary">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"
+                ></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+              </svg>
+            </div>
+            <div class="btn-icon-secondary">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"
+                ></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a
+          href={t.contact.socials.tiktok}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-btn"
+          aria-label="TikTok"
+        >
+          <div class="btn-icon-wrapper">
+            <div class="btn-icon-primary">
+              <svg viewBox="0 0 448 512" fill="currentColor">
+                <path
+                  d="M448.5 209.9c-44 .1-87-13.6-122.8-39.2l0 178.7c0 33.1-10.1 65.4-29 92.6s-45.6 48-76.6 59.6-64.8 13.5-96.9 5.3-60.9-25.9-82.7-50.8-35.3-56-39-88.9 2.9-66.1 18.6-95.2 40-52.7 69.6-67.7 62.9-20.5 95.7-16l0 89.9c-15-4.7-31.1-4.6-46 .4s-27.9 14.6-37 27.3-14 28.1-13.9 43.9 5.2 31 14.5 43.7 22.4 22.1 37.4 26.9 31.1 4.8 46-.1 28-14.4 37.2-27.1 14.2-28.1 14.2-43.8l0-349.4 88 0c-.1 7.4 .6 14.9 1.9 22.2 3.1 16.3 9.4 31.9 18.7 45.7s21.3 25.6 35.2 34.6c19.9 13.1 43.2 20.1 67 20.1l0 87.4z"
+                ></path>
+              </svg>
+            </div>
+            <div class="btn-icon-secondary">
+              <svg viewBox="0 0 448 512" fill="currentColor">
+                <path
+                  d="M448.5 209.9c-44 .1-87-13.6-122.8-39.2l0 178.7c0 33.1-10.1 65.4-29 92.6s-45.6 48-76.6 59.6-64.8 13.5-96.9 5.3-60.9-25.9-82.7-50.8-35.3-56-39-88.9 2.9-66.1 18.6-95.2 40-52.7 69.6-67.7 62.9-20.5 95.7-16l0 89.9c-15-4.7-31.1-4.6-46 .4s-27.9 14.6-37 27.3-14 28.1-13.9 43.9 5.2 31 14.5 43.7 22.4 22.1 37.4 26.9 31.1 4.8 46-.1 28-14.4 37.2-27.1 14.2-28.1 14.2-43.8l0-349.4 88 0c-.1 7.4 .6 14.9 1.9 22.2 3.1 16.3 9.4 31.9 18.7 45.7s21.3 25.6 35.2 34.6c19.9 13.1 43.2 20.1 67 20.1l0 87.4z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a
+          href={t.contact.socials.youtube}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-btn"
+          aria-label="YouTube"
+        >
+          <div class="btn-icon-wrapper">
+            <div class="btn-icon-primary">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
+                ></path>
+              </svg>
+            </div>
+            <div class="btn-icon-secondary">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </a>
+
+        <a href={t.contact.socials.email} class="social-btn" aria-label="Email">
+          <div class="btn-icon-wrapper">
+            <div class="btn-icon-primary">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                ></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+            </div>
+            <div class="btn-icon-secondary">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                ></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="email-display section-email">
+        <a href={"mailto:" + emailLabel} class="email-link">{emailLabel}</a>
+      </div>
+    </div>
+
+    <footer class="footer-block">
+      <div class="footer-separator animate-footer">
+        <div class="line left"></div>
+        <div class="footer-logo">FIMOSOFT</div>
+        <div class="line right"></div>
+      </div>
+
+      <div class="footer-grid animate-footer">
+        <div class="footer-legal">
+          <span class="copyright">{t.contact.footer.copyright}</span>
+          <span class="separator-dot">/</span>
+          <span class="rights">{t.contact.footer.rights}</span>
+        </div>
+        <div class="footer-manifesto">WHERE NIGHTMARES TAKE SHAPE</div>
+      </div>
+    </footer>
+  </div>
+</section>
+
+<style>
+  .contact-section {
+    padding: 15vh 5vw 10vh 5vw;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    z-index: 10;
+  }
+
+  .contact-container {
+    max-width: 90rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12vh;
+  }
+
+  .contact-content {
+    text-align: center;
+    width: 100%;
+  }
+
+  .projects-title {
+    font-size: clamp(2rem, 5vw, 4rem);
+    margin-bottom: 3rem;
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  .social-links {
+    display: flex;
+    justify-content: center;
+    gap: clamp(1rem, 2.5vw, 1.8rem);
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+
+  .social-btn {
+    display: block;
+    width: 3rem;
+    height: 3rem;
+    color: #fff;
+    cursor: pointer;
+    overflow: hidden;
+    text-decoration: none;
+    opacity: 0;
+    transform: translateY(30px);
+    filter: blur(10px);
+  }
+
+  .btn-icon-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .social-btn:hover .btn-icon-wrapper {
+    transform: translateY(-3rem);
+  }
+
+  .btn-icon-primary,
+  .btn-icon-secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    flex-shrink: 0;
+  }
+
+  .btn-icon-secondary {
+    color: #7f1d1d;
+  }
+
+  svg {
+    width: 1.8rem;
+    height: 1.8rem;
+    display: block;
+  }
+
+  /* Email Display */
+  .email-display {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(5px);
+    margin-bottom: 2rem;
+  }
+
+  .email-link {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+    letter-spacing: 0.2em;
+    font-weight: 400;
+    transition: color 0.3s ease;
+  }
+
+  .email-link:hover {
+    color: #7f1d1d;
+  }
+
+  /* High-end Footer */
+  .footer-block {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    margin-top: 5vh;
+  }
+
+  .footer-separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    opacity: 0;
+  }
+
+  .footer-separator .line {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(127, 29, 29, 0.6));
+    flex-grow: 1;
+    max-width: 400px;
+  }
+
+  .footer-separator .line.right {
+    background: linear-gradient(to left, transparent, rgba(127, 29, 29, 0.6));
+  }
+
+  .footer-logo {
+    font-family: "Cinzel Decorative", cursive;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #7f1d1d;
+    letter-spacing: 0.5em;
+    opacity: 0.95;
+    text-shadow: 0 0 10px rgba(127, 29, 29, 0.3);
+  }
+
+  .footer-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+    opacity: 0;
+  }
+
+  .footer-legal {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .copyright {
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .separator-dot {
+    color: #7f1d1d;
+    font-weight: 700;
+  }
+
+  .footer-manifesto {
+    font-size: 0.7rem;
+    letter-spacing: 0.5em;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  @media (max-width: 767px) {
+    .contact-section {
+      padding: 10vh 5vw 6vh 5vw;
+    }
+
+    .social-links {
+      gap: 1.2rem;
+    }
+
+    .social-btn {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+
+    .social-btn:hover .btn-icon-wrapper {
+      transform: translateY(-2.5rem);
+    }
+
+    .btn-icon-primary,
+    .btn-icon-secondary {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+
+    svg {
+      width: 1.4rem;
+      height: 1.4rem;
+    }
+
+    .footer-separator .line {
+      max-width: 80px;
+    }
+
+    .footer-logo {
+      font-size: 0.9rem;
+      letter-spacing: 0.3em;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  function initContactAnimations() {
+    // Reveal section title
+    gsap.from(".section-title", {
+      scrollTrigger: {
+        trigger: ".section-title",
+        start: "top 95%",
+      },
+      duration: 0.8,
+      opacity: 0,
+      y: 30,
+      filter: "blur(10px)",
+      ease: "power3.out",
+    });
+
+    // Staggered reveal for social buttons
+    gsap.to(".social-btn", {
+      scrollTrigger: {
+        trigger: ".social-links",
+        start: "top 95%",
+      },
+      duration: 0.8,
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      stagger: 0.1,
+      ease: "expo.out",
+    });
+
+    // Reveal email display
+    gsap.to(".section-email", {
+      scrollTrigger: {
+        trigger: ".section-email",
+        start: "top 95%",
+      },
+      duration: 1,
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      delay: 0.4,
+      ease: "power2.out",
+    });
+
+    // Reveal footer
+    gsap.to(".animate-footer", {
+      scrollTrigger: {
+        trigger: ".footer-block",
+        start: "top 98%",
+      },
+      duration: 1,
+      opacity: 1,
+      filter: "blur(0px)",
+      stagger: 0.2,
+      ease: "power2.out",
+    });
+  }
+
+  window.addEventListener("load", initContactAnimations);
+</script>
