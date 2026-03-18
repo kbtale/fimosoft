@@ -73,7 +73,7 @@ export const translations = {
       },
       footer: {
         copyright: "© 2026 FIMOSOFT",
-        rights: "TODAS LAS PESADILLAS RESERVADAS"
+        rights: "TODOS LOS SUSTOS RESERVADOS"
       }
     },
     games: [

@@ -244,6 +244,11 @@ const galleryImages = game.screenshots.slice(1);
   .game-card {
     width: 100%;
     position: relative;
+    /* Pre-animation state */
+    opacity: 0;
+    transform: translateY(40px);
+    filter: blur(10px);
+    will-change: transform, opacity, filter;
   }
 
   .card-inner {

@@ -331,7 +331,7 @@ const emailLabel = "fimosoftgames@outlook.com";
     font-size: 1.2rem;
     color: #7f1d1d;
     letter-spacing: 0.5em;
-    opacity: 0.95;
+    opacity: 1;
     text-shadow: 0 0 10px rgba(127, 29, 29, 0.3);
   }
 
@@ -343,7 +343,7 @@ const emailLabel = "fimosoftgames@outlook.com";
     font-size: 0.8rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.85);
     opacity: 0;
   }
 
@@ -367,7 +367,7 @@ const emailLabel = "fimosoftgames@outlook.com";
   .footer-manifesto {
     font-size: 0.7rem;
     letter-spacing: 0.5em;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.6);
   }
 
   @media (max-width: 767px) {
@@ -435,12 +435,13 @@ const emailLabel = "fimosoftgames@outlook.com";
       scrollTrigger: {
         trigger: ".social-links",
         start: "top 95%",
+        toggleActions: "play none none reverse",
       },
-      duration: 0.8,
+      duration: 1.2,
       opacity: 1,
       y: 0,
       filter: "blur(0px)",
-      stagger: 0.1,
+      stagger: 0.15,
       ease: "expo.out",
     });
 
