@@ -11,172 +11,555 @@ const coverImage = game.screenshots.length > 0 ? game.screenshots[0] : "";
 const galleryImages = game.screenshots.slice(1);
 ---
 
-<article class="game-card">
-  <div class="media-container">
-    {hasVideo ? (
-      <video class="hero-media" autoplay muted loop playsinline poster={coverImage}>
-        <source src={game.videoUrl} type="video/mp4" />
-      </video>
-    ) : (
-      <img class="hero-media" src={coverImage} alt={game.title} loading="lazy" />
-    )}
-    <div class="media-overlay"></div>
-  </div>
-
-  <div class="content">
-    <header class="card-header">
-      <h3 class="title">{game.title}</h3>
-      <div class="meta">
-        <span class="release-date">{game.releaseDate}</span>
+<article
+  class="game-card"
+  data-game-id={game.title.replace(/\s+/g, "-").toLowerCase()}
+>
+  <div class="card-inner">
+    <div class="main-content">
+      <div class="media-container">
+        {
+          hasVideo ? (
+            <video
+              class="hero-media"
+              autoplay
+              muted
+              loop
+              playsinline
+              poster={coverImage}
+            >
+              <source src={game.videoUrl} type="video/mp4" />
+            </video>
+          ) : (
+            <img
+              class="hero-media"
+              src={coverImage}
+              alt={game.title}
+              loading="lazy"
+            />
+          )
+        }
+        <div class="media-overlay">
+          <div class="overlay-info">
+            <h3 class="title">{game.title}</h3>
+            <div class="meta">
+              <span class="release-date">{game.releaseDate}</span>
+            </div>
+          </div>
+          <button class="view-toggle-btn">
+            <div class="btn-text-wrapper">
+              <span class="btn-text-primary">Details</span>
+              <span class="btn-text-secondary">Details</span>
+            </div>
+          </button>
+        </div>
       </div>
-    </header>
 
-    <div class="genres">
-      {game.genre.split(",").map((genre) => (
-        <span class="genre-tag">{genre.trim()}</span>
-      ))}
+      <div class="genres-panel">
+        <h3 class="secondary-title">{game.title}</h3>
+        <div class="secondary-meta">
+          <span class="secondary-date">{game.releaseDate}</span>
+        </div>
+      </div>
     </div>
 
-    <p class="description">{game.description}</p>
+    <div class="details-panel">
+      <div class="details-content">
+        <div class="genres">
+          {
+            game.genre
+              .split(",")
+              .map((genre) => <span class="genre-tag">{genre.trim()}</span>)
+          }
+        </div>
+        <p class="description">{game.description}</p>
+        
+        {
+          game.steamUrl && (
+            <a
+              href={game.steamUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="steam-button"
+            >
+              <div class="btn-text-wrapper">
+                <span class="btn-text-primary">View on Steam</span>
+                <span class="btn-text-secondary">View on Steam</span>
+              </div>
+            </a>
+          )
+        }
 
-    {galleryImages.length > 0 && (
-      <div class="gallery">
-        {galleryImages.map((img) => (
-          <img class="gallery-img" src={img} alt={`Screenshot of ${game.title}`} loading="lazy" />
-        ))}
+        {
+          galleryImages.length > 0 && (
+            <div class="gallery">
+              {galleryImages.map((img) => (
+                <img
+                  class="gallery-img"
+                  src={img}
+                  alt={`Screenshot of ${game.title}`}
+                  loading="lazy"
+                />
+              ))}
+            </div>
+          )
+        }
       </div>
-    )}
+    </div>
   </div>
 </article>
 
-<style>
-  .game-card {
-    background: rgba(10, 10, 10, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    min-height: 500px;
-    transition: transform 0.3s ease, border-color 0.3s ease;
-    backdrop-filter: blur(10px);
+<script>
+  import { gsap } from "gsap";
+
+  function initCard(card: HTMLElement) {
+    if (card.dataset.initialized) return;
+    card.dataset.initialized = "true";
+
+    const btn = card.querySelector(".view-toggle-btn");
+    const btnText = card.querySelector(".btn-text");
+    const mediaContainer = card.querySelector(".media-container");
+    const detailsPanel = card.querySelector(".details-panel") as HTMLElement;
+    const genresPanel = card.querySelector(".genres-panel") as HTMLElement;
+    const primaryTitle = card.querySelector(".overlay-info");
+    const secondaryTitle = card.querySelector(".secondary-title");
+    const secondaryMeta = card.querySelector(".secondary-meta");
+    const steamBtn = card.querySelector(".steam-button");
+    const categories = card.querySelector(".details-content .genres");
+
+    const mainContent = card.querySelector(".main-content");
+
+    let isOpen = false;
+
+    // Responsive check
+    const isDesktop = () => window.innerWidth >= 768;
+
+    const tl = gsap.timeline({
+      paused: true,
+      defaults: { ease: "power3.inOut", duration: 0.8 },
+    });
+
+    if (isDesktop()) {
+      tl.set([detailsPanel, genresPanel], { display: "block" })
+        .to(mainContent, { width: "55%" }, 0)
+        .to(mediaContainer, { width: "100%", borderRadius: "12px 0 0 12px" }, 0)
+        .to(
+          detailsPanel,
+          {
+            width: "45%",
+            height: "auto",
+            opacity: 1,
+            pointerEvents: "auto",
+          },
+          0,
+        )
+        .to(primaryTitle, { opacity: 0, y: -20, duration: 0.4 }, 0)
+        .to(
+          [secondaryTitle, secondaryMeta],
+          { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.6, stagger: 0.1 },
+          0.3,
+        )
+        .to(
+          [
+            categories,
+            card.querySelector(".description"),
+            steamBtn,
+            ...Array.from(card.querySelectorAll(".gallery-img")),
+          ].filter(Boolean),
+          {
+            opacity: 1,
+            filter: "blur(0px)",
+            y: 0,
+            stagger: 0.05,
+            duration: 0.5,
+            ease: "power2.out",
+          },
+          0.4,
+        )
+        .to(
+          genresPanel,
+          {
+            height: "auto",
+            opacity: 1,
+            marginTop: "2rem",
+          },
+          0.3,
+        );
+    } else {
+      // Mobile
+      tl.set([detailsPanel, genresPanel], { display: "block" })
+        .to(
+          detailsPanel,
+          {
+            height: "auto",
+            opacity: 1,
+            marginTop: "2rem",
+            pointerEvents: "auto",
+          },
+          0,
+        )
+        .to(primaryTitle, { opacity: 0, y: -20, duration: 0.4 }, 0)
+        .to(
+          [secondaryTitle, secondaryMeta],
+          { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.6, stagger: 0.1 },
+          0.2,
+        )
+        .to(
+          [
+            categories,
+            card.querySelector(".description"),
+            steamBtn,
+            ...Array.from(card.querySelectorAll(".gallery-img")),
+          ].filter(Boolean),
+          {
+            opacity: 1,
+            filter: "blur(0px)",
+            y: 0,
+            stagger: 0.05,
+            duration: 0.4,
+          },
+          0.2,
+        )
+        .to(genresPanel, { height: "auto", opacity: 1 }, 0);
+    }
+
+    btn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!isOpen) {
+        tl.play();
+      } else {
+        tl.reverse();
+      }
+      isOpen = !isOpen;
+    });
   }
 
-  .game-card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(255, 255, 255, 0.15);
+  // Initialize all cards
+  document
+    .querySelectorAll(".game-card")
+    .forEach((card) => initCard(card as HTMLElement));
+</script>
+
+<style>
+  .game-card {
+    width: 100%;
+    position: relative;
+  }
+
+  .card-inner {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    .card-inner {
+      flex-direction: row;
+      align-items: stretch;
+    }
+  }
+
+  .main-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
   }
 
   .media-container {
     position: relative;
-    height: 250px;
     width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
     overflow: hidden;
+    background: #000;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  @media (min-width: 768px) {
+    .media-container {
+      width: 90%;
+      transition: border-radius 0.6s ease;
+    }
   }
 
   .hero-media {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.7s ease;
-  }
-
-  .game-card:hover .hero-media {
-    transform: scale(1.05);
+    transform: scale(1.01);
   }
 
   .media-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(10, 10, 10, 1) 0%, rgba(10, 10, 10, 0) 100%);
-  }
-
-  .content {
-    padding: 2rem;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.95) 0%,
+      rgba(0, 0, 0, 0.4) 30%,
+      rgba(0, 0, 0, 0) 100%
+    );
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
-    position: relative;
-    z-index: 2;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: clamp(1.5rem, 3vw, 3rem);
   }
 
-  .card-header {
+  .overlay-info {
+    width: 100%;
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 
   .title {
-    font-size: clamp(1.5rem, 2vw, 2rem);
-    color: #ffffff;
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    color: #fff;
     margin: 0;
-    line-height: 1.2;
     font-weight: 700;
+    letter-spacing: -0.03em;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   }
 
   .meta {
     display: flex;
-    flex-shrink: 0;
+    align-items: center;
+    gap: 1rem;
   }
 
   .release-date {
-    font-size: 0.85rem;
-    color: #9ca3af;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 0.3rem 0.6rem;
-    border-radius: 4px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 500;
+  }
+
+  .view-toggle-btn {
+    align-self: flex-start;
+    margin-top: 1.5rem;
+    background: transparent;
+    color: #fff;
+    border: none;
+    padding: 0;
+    font-size: 1.1rem;
+    font-family: "Cinzel Decorative", cursive;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    overflow: hidden;
+    height: 1.5rem;
+  }
+
+  .btn-text-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .view-toggle-btn:hover .btn-text-wrapper {
+    transform: translateY(-1.5rem);
+  }
+
+  .btn-text-primary,
+  .btn-text-secondary {
+    display: block;
+    height: 1.5rem;
+    line-height: 1.5rem;
     white-space: nowrap;
+  }
+
+  .btn-text-secondary {
+    color: #7f1d1d;
+  }
+
+  .secondary-title {
+    font-size: clamp(1.4rem, 3.5vw, 2rem);
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(20px);
+    will-change: transform, filter, opacity;
+  }
+
+  .secondary-meta {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(10px);
+    will-change: transform, filter, opacity;
+  }
+
+  .secondary-date {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 500;
+  }
+
+  /* Genres Panel */
+  .genres-panel {
+    width: 100%;
+    height: 0;
+    opacity: 0;
+    display: none;
+    overflow: hidden;
+  }
+
+  @media (min-width: 768px) {
+    .genres-panel {
+      width: 90%;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .genres-panel {
+      height: auto;
+      opacity: 1;
+      margin-top: 1.5rem;
+    }
   }
 
   .genres {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
+    gap: 0.8rem;
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(20px);
+    will-change: transform, filter, opacity;
   }
 
   .genre-tag {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #d1d5db;
-    background: rgba(127, 29, 29, 0.2);
-    border: 1px solid rgba(127, 29, 29, 0.3);
-    padding: 0.2rem 0.6rem;
-    border-radius: 20px;
+    letter-spacing: 0.1em;
+    color: #e5e5e5;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Details Panel */
+  .details-panel {
+    width: 0;
+    height: 0;
+    opacity: 0;
+    display: none;
+    overflow: hidden;
+    pointer-events: none;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 0 12px 12px 0;
+  }
+
+  @media (max-width: 767px) {
+    .details-panel {
+      width: 100%;
+      height: 0;
+      background: transparent;
+    }
+  }
+
+  .details-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .details-content {
+      padding: 2.5rem;
+    }
   }
 
   .description {
-    color: #a1a1aa;
-    line-height: 1.6;
-    font-size: 0.95rem;
-    margin-bottom: 2rem;
-    flex-grow: 1;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 1rem 0 0.5rem 0;
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(20px);
+    will-change: transform, filter, opacity;
   }
 
   .gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-    gap: 0.5rem;
-    margin-top: auto;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .steam-button {
+    align-self: flex-start;
+    background: transparent;
+    color: #fff;
+    border: none;
+    padding: 0;
+    font-size: 1.1rem;
+    font-family: "Cinzel Decorative", cursive;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    overflow: hidden;
+    height: 1.5rem;
+    display: inline-flex;
+    text-decoration: none;
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(20px);
+  }
+
+  .steam-button .btn-text-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .steam-button:hover .btn-text-wrapper {
+    transform: translateY(-1.5rem);
+  }
+
+  .steam-button .btn-text-primary,
+  .steam-button .btn-text-secondary {
+    display: block;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    white-space: nowrap;
+  }
+
+  .steam-button .btn-text-secondary {
+    color: #7f1d1d;
   }
 
   .gallery-img {
     width: 100%;
-    height: 60px;
+    aspect-ratio: 16 / 9;
     object-fit: cover;
-    border-radius: 4px;
-    opacity: 0.6;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    cursor: pointer;
+    border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(20px);
+    will-change: transform, filter, opacity;
+    transition:
+      transform 0.3s ease,
+      border-color 0.3s ease;
   }
 
   .gallery-img:hover {
-    opacity: 1;
     transform: scale(1.05);
+    border-color: rgba(255, 255, 255, 0.3);
   }
 </style>

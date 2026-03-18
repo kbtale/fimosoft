@@ -15,5 +15,6 @@ export interface Game {
   releaseDate: string;
   description: string;
   videoUrl?: string;
+  steamUrl?: string;
   screenshots: string[];
 }

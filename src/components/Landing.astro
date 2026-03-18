@@ -3,6 +3,8 @@ import Layout from "../layouts/Layout.astro";
 import { translations, type Locale } from "../i18n/translations";
 import ScrollReveal from "./ScrollReveal.astro";
 import GameCard from "./GameCard.astro";
+import Navbar from "./Navbar.astro";
+import Contact from "./Contact.astro";
 interface Props {
   locale: Locale;
 }
@@ -12,6 +14,7 @@ const t = translations[locale];
 ---
 
 <Layout>
+  <Navbar locale={locale} />
   <div class="landing-container">
     <!-- bg Video -->
     <div class="video-background">
@@ -90,11 +93,11 @@ const t = translations[locale];
       <section class="projects-placeholder">
         <h3 class="projects-title">{t.gamesTitle}</h3>
         <div class="project-cards">
-          {t.games.map((game) => (
-            <GameCard game={game} />
-          ))}
+          {t.games.map((game) => <GameCard game={game} />)}
         </div>
       </section>
+
+      <Contact locale={locale} />
     </div>
   </div>
 </Layout>
@@ -199,7 +202,7 @@ const t = translations[locale];
     line-height: 0.8;
     width: clamp(16rem, 50vw, 65rem);
     filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
-    pointer-events: auto;
+    pointer-events: none;
   }
 
   .word {
@@ -268,11 +271,10 @@ const t = translations[locale];
   }
 
   .project-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6rem;
   }
-
 </style>
 
 <script>
