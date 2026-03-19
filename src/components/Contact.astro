@@ -169,7 +169,12 @@ const emailLabel = "fimosoftgames@outlook.com";
       </div>
 
       <div class="email-display section-email">
-        <a href={"mailto:" + emailLabel} class="email-link">{emailLabel}</a>
+        <a href={"mailto:" + emailLabel} class="email-link btn-sliding-text">
+          <div class="btn-text-wrapper">
+            <span class="btn-text-primary">{emailLabel}</span>
+            <span class="btn-text-secondary">{emailLabel}</span>
+          </div>
+        </a>
       </div>
     </div>
 
@@ -290,13 +295,10 @@ const emailLabel = "fimosoftgames@outlook.com";
     letter-spacing: 0.2em;
     font-weight: 700;
     color: var(--text-accent-red);
-    transition:
-      color 0.3s ease,
-      opacity 0.3s ease;
   }
 
-  .email-link:hover {
-    color: #7f1d1d;
+  .email-link .btn-text-secondary {
+    color: #ffffff;
   }
 
   /* High-end Footer */
