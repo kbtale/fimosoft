@@ -169,7 +169,12 @@ const emailLabel = "fimosoftgames@outlook.com";
       </div>
 
       <div class="email-display section-email">
-        <a href={"mailto:" + emailLabel} class="email-link">{emailLabel}</a>
+        <a href={"mailto:" + emailLabel} class="email-link btn-sliding-text">
+          <div class="btn-text-wrapper">
+            <span class="btn-text-primary">{emailLabel}</span>
+            <span class="btn-text-secondary">{emailLabel}</span>
+          </div>
+        </a>
       </div>
     </div>
 
@@ -267,7 +272,7 @@ const emailLabel = "fimosoftgames@outlook.com";
   }
 
   .btn-icon-secondary {
-    color: #7f1d1d;
+    color: var(--text-accent-red);
   }
 
   svg {
@@ -285,16 +290,15 @@ const emailLabel = "fimosoftgames@outlook.com";
   }
 
   .email-link {
-    color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
     font-size: clamp(0.9rem, 1.5vw, 1.2rem);
     letter-spacing: 0.2em;
-    font-weight: 400;
-    transition: color 0.3s ease;
+    font-weight: 700;
+    color: var(--text-accent-red);
   }
 
-  .email-link:hover {
-    color: #7f1d1d;
+  .email-link .btn-text-secondary {
+    color: #ffffff;
   }
 
   /* High-end Footer */
@@ -329,10 +333,9 @@ const emailLabel = "fimosoftgames@outlook.com";
     font-family: "Cinzel Decorative", cursive;
     font-weight: 700;
     font-size: 1.2rem;
-    color: #7f1d1d;
+    color: var(--text-accent-red);
     letter-spacing: 0.5em;
-    opacity: 0.95;
-    text-shadow: 0 0 10px rgba(127, 29, 29, 0.3);
+    opacity: 1;
   }
 
   .footer-grid {
@@ -343,7 +346,7 @@ const emailLabel = "fimosoftgames@outlook.com";
     font-size: 0.8rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.85);
     opacity: 0;
   }
 
@@ -367,7 +370,7 @@ const emailLabel = "fimosoftgames@outlook.com";
   .footer-manifesto {
     font-size: 0.7rem;
     letter-spacing: 0.5em;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.6);
   }
 
   @media (max-width: 767px) {
@@ -435,12 +438,13 @@ const emailLabel = "fimosoftgames@outlook.com";
       scrollTrigger: {
         trigger: ".social-links",
         start: "top 95%",
+        toggleActions: "play none none reverse",
       },
-      duration: 0.8,
+      duration: 1.2,
       opacity: 1,
       y: 0,
       filter: "blur(0px)",
-      stagger: 0.1,
+      stagger: 0.15,
       ease: "expo.out",
     });
 

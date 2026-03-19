@@ -91,8 +91,8 @@ const t = translations[locale];
       </ScrollReveal>
 
       <section class="projects-placeholder">
-        <h3 class="projects-title">{t.gamesTitle}</h3>
-        <div class="project-cards">
+        <h3 class="projects-title section-title-games">{t.gamesTitle}</h3>
+        <div class="project-cards-grid">
           {t.games.map((game) => <GameCard game={game} />)}
         </div>
       </section>
@@ -268,12 +268,17 @@ const t = translations[locale];
     font-size: clamp(2rem, 5vw, 4rem);
     margin-bottom: 3rem;
     color: #ffffff;
+    /* Pre-animation state */
+    opacity: 0;
+    transform: translateY(60px);
+    filter: blur(15px);
   }
 
-  .project-cards {
+  .project-cards-grid {
     display: flex;
     flex-direction: column;
-    gap: 6rem;
+    gap: 8rem;
+    width: 100%;
   }
 </style>
 
@@ -299,8 +304,8 @@ const t = translations[locale];
       y: 0,
       opacity: 1,
       filter: "blur(0px)",
-      duration: 0.8,
-      stagger: 0.1,
+      duration: 0.6,
+      stagger: 0.06,
     })
 
       .to(
@@ -309,20 +314,20 @@ const t = translations[locale];
           y: 0,
           opacity: 1,
           filter: "blur(0px)",
-          duration: 0.8,
-          stagger: 0.1,
+          duration: 0.6,
+          stagger: 0.06,
         },
-        "-=0.6",
+        "-=0.3",
       )
 
       .to(
         ".vertical-divider",
         {
           scaleY: 1,
-          duration: 0.8,
+          duration: 0.6,
           ease: "expo.inOut",
         },
-        "-=0.6",
+        "-=0.3",
       )
 
       .to(
@@ -331,10 +336,10 @@ const t = translations[locale];
           y: 0,
           opacity: 1,
           filter: "blur(0px)",
-          duration: 0.8,
-          stagger: 0.1,
+          duration: 0.6,
+          stagger: 0.06,
         },
-        "-=0.4",
+        "-=0.2",
       );
 
     const allLetters = document.querySelectorAll(
@@ -420,6 +425,41 @@ const t = translations[locale];
         );
       });
     }
+
+    // Projects Section Reveal
+    gsap.to(".section-title-games", {
+      scrollTrigger: {
+        trigger: ".section-title-games",
+        start: "top 95%",
+        toggleActions: "play none none reverse",
+      },
+      duration: 1.5,
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      ease: "power4.out",
+    });
+
+    const cards = gsap.utils.toArray(".game-card");
+    cards.forEach((card: any, index) => {
+      gsap.to(card, {
+        scrollTrigger: {
+          trigger: card,
+          start: "top 92%",
+          toggleActions: "play none none reverse",
+        },
+        duration: 1.8,
+        opacity: 1,
+        y: 0,
+        filter: "blur(0px)",
+        ease: "expo.out",
+        delay: index % 2 === 0 ? 0 : 0.1,
+      });
+    });
+
+    window.addEventListener("load", () => {
+      ScrollTrigger.refresh();
+    });
   });
 </script>
 

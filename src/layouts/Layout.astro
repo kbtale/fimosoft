@@ -14,6 +14,11 @@
       rel="stylesheet"
     />
     <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+    ></script>
     <script is:inline>
       if ("scrollRestoration" in history) {
         history.scrollRestoration = "manual";
@@ -22,6 +27,14 @@
 
       // Initialize Lenis
       const lenis = new Lenis();
+
+      lenis.on("scroll", ScrollTrigger.update);
+
+      gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
+      });
+      gsap.ticker.lagSmoothing(0);
+
       function raf(time) {
         lenis.raf(time);
         requestAnimationFrame(raf);
@@ -32,7 +45,10 @@
       document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
         anchor.addEventListener("click", function (e) {
           e.preventDefault();
-          lenis.scrollTo(this.getAttribute("href"));
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            lenis.scrollTo(target);
+          }
         });
       });
     </script>
@@ -110,6 +126,7 @@
     --selection-bg: #7f1d1d;
     --selection-text: #ffffff;
     --accent-red: #7f1d1d;
+    --text-accent-red: #dc2626;
   }
 
   html,
@@ -119,6 +136,63 @@
     color: var(--text-color);
     font-family: "Cinzel Decorative", cursive;
     scrollbar-gutter: stable;
+  }
+
+  ::-webkit-scrollbar {
+    width: 24px;
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    background-image: url("/scroll.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    border-radius: 0;
+  }
+
+  /* Firefox fallback */
+  @supports (-moz-appearance: none) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #7f1d1d var(--bg-color);
+    }
+  }
+
+  /* Sliding Text */
+  .btn-sliding-text {
+    height: 1.5rem;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .btn-text-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .btn-sliding-text:hover .btn-text-wrapper {
+    transform: translateY(-1.5rem);
+  }
+
+  .btn-text-primary,
+  .btn-text-secondary {
+    display: block;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    white-space: nowrap;
+  }
+
+  .btn-text-secondary {
+    color: var(--text-accent-red);
   }
 
   /* Lenis CSS */

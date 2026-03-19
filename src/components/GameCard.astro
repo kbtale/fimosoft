@@ -46,7 +46,7 @@ const galleryImages = game.screenshots.slice(1);
               <span class="release-date">{game.releaseDate}</span>
             </div>
           </div>
-          <button class="view-toggle-btn">
+          <button class="view-toggle-btn btn-sliding-text">
             <div class="btn-text-wrapper">
               <span class="btn-text-primary">Details</span>
               <span class="btn-text-secondary">Details</span>
@@ -73,14 +73,14 @@ const galleryImages = game.screenshots.slice(1);
           }
         </div>
         <p class="description">{game.description}</p>
-        
+
         {
           game.steamUrl && (
             <a
               href={game.steamUrl}
               target="_blank"
               rel="noopener noreferrer"
-              class="steam-button"
+              class="steam-button btn-sliding-text"
             >
               <div class="btn-text-wrapper">
                 <span class="btn-text-primary">View on Steam</span>
@@ -156,7 +156,13 @@ const galleryImages = game.screenshots.slice(1);
         .to(primaryTitle, { opacity: 0, y: -20, duration: 0.4 }, 0)
         .to(
           [secondaryTitle, secondaryMeta],
-          { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.6, stagger: 0.1 },
+          {
+            opacity: 1,
+            filter: "blur(0px)",
+            y: 0,
+            duration: 0.6,
+            stagger: 0.1,
+          },
           0.3,
         )
         .to(
@@ -201,7 +207,13 @@ const galleryImages = game.screenshots.slice(1);
         .to(primaryTitle, { opacity: 0, y: -20, duration: 0.4 }, 0)
         .to(
           [secondaryTitle, secondaryMeta],
-          { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.6, stagger: 0.1 },
+          {
+            opacity: 1,
+            filter: "blur(0px)",
+            y: 0,
+            duration: 0.6,
+            stagger: 0.1,
+          },
           0.2,
         )
         .to(
@@ -244,6 +256,11 @@ const galleryImages = game.screenshots.slice(1);
   .game-card {
     width: 100%;
     position: relative;
+    /* Pre-animation state */
+    opacity: 0;
+    transform: translateY(40px);
+    filter: blur(10px);
+    will-change: transform, opacity, filter;
   }
 
   .card-inner {
@@ -351,31 +368,6 @@ const galleryImages = game.screenshots.slice(1);
     text-transform: uppercase;
     letter-spacing: 0.15em;
     cursor: pointer;
-    overflow: hidden;
-    height: 1.5rem;
-  }
-
-  .btn-text-wrapper {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
-  }
-
-  .view-toggle-btn:hover .btn-text-wrapper {
-    transform: translateY(-1.5rem);
-  }
-
-  .btn-text-primary,
-  .btn-text-secondary {
-    display: block;
-    height: 1.5rem;
-    line-height: 1.5rem;
-    white-space: nowrap;
-  }
-
-  .btn-text-secondary {
-    color: #7f1d1d;
   }
 
   .secondary-title {
@@ -511,36 +503,11 @@ const galleryImages = game.screenshots.slice(1);
     text-transform: uppercase;
     letter-spacing: 0.15em;
     cursor: pointer;
-    overflow: hidden;
-    height: 1.5rem;
     display: inline-flex;
     text-decoration: none;
     opacity: 0;
     filter: blur(10px);
     transform: translateY(20px);
-  }
-
-  .steam-button .btn-text-wrapper {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
-  }
-
-  .steam-button:hover .btn-text-wrapper {
-    transform: translateY(-1.5rem);
-  }
-
-  .steam-button .btn-text-primary,
-  .steam-button .btn-text-secondary {
-    display: block;
-    height: 1.5rem;
-    line-height: 1.5rem;
-    white-space: nowrap;
-  }
-
-  .steam-button .btn-text-secondary {
-    color: #7f1d1d;
   }
 
   .gallery-img {
