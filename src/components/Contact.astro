@@ -267,7 +267,7 @@ const emailLabel = "fimosoftgames@outlook.com";
   }
 
   .btn-icon-secondary {
-    color: #7f1d1d;
+    color: var(--text-accent-red);
   }
 
   svg {
@@ -285,12 +285,14 @@ const emailLabel = "fimosoftgames@outlook.com";
   }
 
   .email-link {
-    color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
     font-size: clamp(0.9rem, 1.5vw, 1.2rem);
     letter-spacing: 0.2em;
-    font-weight: 400;
-    transition: color 0.3s ease;
+    font-weight: 700;
+    color: var(--text-accent-red);
+    transition:
+      color 0.3s ease,
+      opacity 0.3s ease;
   }
 
   .email-link:hover {
@@ -329,10 +331,9 @@ const emailLabel = "fimosoftgames@outlook.com";
     font-family: "Cinzel Decorative", cursive;
     font-weight: 700;
     font-size: 1.2rem;
-    color: #7f1d1d;
+    color: var(--text-accent-red);
     letter-spacing: 0.5em;
     opacity: 1;
-    text-shadow: 0 0 10px rgba(127, 29, 29, 0.3);
   }
 
   .footer-grid {
