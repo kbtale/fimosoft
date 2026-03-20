@@ -368,14 +368,24 @@ const galleryImages = game.screenshots.slice(1);
         .to(genresPanel, { height: "auto", opacity: 1 }, 0);
     }
 
-    btn?.addEventListener("click", (e) => {
-      e.stopPropagation();
+    const toggle = () => {
       if (!isOpen) {
         tl.play();
+        btn?.classList.add("btn-active");
       } else {
         tl.reverse();
+        btn?.classList.remove("btn-active");
       }
       isOpen = !isOpen;
+    };
+
+    btn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggle();
+    });
+
+    mediaContainer?.addEventListener("click", () => {
+      toggle();
     });
   }
 
@@ -450,7 +460,7 @@ const galleryImages = game.screenshots.slice(1);
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 1;
+    z-index: 3;
   }
 
   .media-overlay {
@@ -513,6 +523,14 @@ const galleryImages = game.screenshots.slice(1);
     text-transform: uppercase;
     letter-spacing: 0.15em;
     cursor: pointer;
+  }
+
+  .view-toggle-btn.btn-active .btn-text-wrapper {
+    transform: translateY(-1.5rem);
+  }
+
+  .view-toggle-btn.btn-active:hover .btn-text-wrapper {
+    transform: translateY(0);
   }
 
   .secondary-title {
