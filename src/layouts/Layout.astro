@@ -13,17 +13,18 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap"
       rel="stylesheet"
     />
+    <script is:inline>
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+      }
+      window.scrollTo(0, 0);
+    </script>
     <script>
       import Lenis from "lenis";
       import { gsap } from "gsap";
       import { ScrollTrigger } from "gsap/ScrollTrigger";
 
       gsap.registerPlugin(ScrollTrigger);
-
-      if ("scrollRestoration" in history) {
-        history.scrollRestoration = "manual";
-      }
-      window.scrollTo(0, 0);
 
       // Initialize Lenis
       const lenis = new Lenis();
@@ -45,7 +46,9 @@
       document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
         anchor.addEventListener("click", function (e) {
           e.preventDefault();
-          const href = (e.currentTarget as HTMLAnchorElement).getAttribute("href");
+          const href = (e.currentTarget as HTMLAnchorElement).getAttribute(
+            "href",
+          );
           if (href) {
             const target = document.querySelector(href) as HTMLElement;
             if (target) {
@@ -101,7 +104,7 @@
             const svg = cursor.querySelector("svg");
             if (svg) {
               svg.setAttribute("fill", "none");
-              svg.setAttribute("stroke", "#000000"); // Solid black as requested
+              svg.setAttribute("stroke", "#000000");
               svg.setAttribute("width", "100%");
               svg.setAttribute("height", "100%");
               const innerPaths = svg.querySelectorAll("path");
