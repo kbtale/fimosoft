@@ -27,6 +27,7 @@
 
       // Initialize Lenis
       const lenis = new Lenis();
+      window.lenis = lenis;
 
       lenis.on("scroll", ScrollTrigger.update);
 
@@ -51,6 +52,7 @@
           }
         });
       });
+
     </script>
   </head>
   <body>
@@ -120,7 +122,7 @@
 
       window.addEventListener("mouseover", (e) => {
         const target = (e.target as HTMLElement).closest(
-          'a, button, [role="button"], .gallery-img, input[type="submit"], input[type="button"]',
+          'a, button, [role="button"], .gallery-img, input[type="submit"], input[type="button"], .logo-block',
         );
 
         if (
