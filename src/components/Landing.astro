@@ -217,10 +217,13 @@ const t = translations[locale];
 
   .letter {
     display: inline-block;
-
     opacity: 0;
     transform: translateY(50px);
     filter: blur(10px);
+    /* Individual letters interaction with no gaps */
+    pointer-events: auto;
+    padding: 0.5rem;
+    margin: -0.5rem;
   }
 
   .tagline-block {
@@ -459,6 +462,15 @@ const t = translations[locale];
 
     window.addEventListener("load", () => {
       ScrollTrigger.refresh();
+    });
+
+    // Logo scroll-to-top (delegated click on letters)
+    document.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+      const el = target.nodeType === 3 ? target.parentElement : target;
+      if (el?.closest(".letter") && window.scrollY > 100) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
     });
   });
 </script>
