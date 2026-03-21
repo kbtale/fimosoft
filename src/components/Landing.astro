@@ -288,18 +288,25 @@ const t = translations[locale];
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import type Lenis from "lenis";
 
   gsap.registerPlugin(ScrollTrigger);
 
+  type AppWindow = Window & typeof globalThis & { appLenis?: Lenis };
+
   document.addEventListener("DOMContentLoaded", () => {
-    // Prevent scrolling during initial entrance animation
+    // Prevent scrolling during animation
     document.body.style.overflow = "hidden";
+    const win = window as AppWindow;
+    if (win.appLenis) win.appLenis.stop();
 
     const tl = gsap.timeline({
       defaults: { ease: "power3.out" },
       onComplete: () => {
-        // Restore scrolling once entrance animation finishes
+        // Restore scrolling once animation finishes
         document.body.style.overflow = "auto";
+        const win = window as AppWindow;
+        if (win.appLenis) win.appLenis.start();
       },
     });
 
@@ -348,7 +355,8 @@ const t = translations[locale];
     const allLetters = document.querySelectorAll(
       ".letter",
     ) as NodeListOf<HTMLElement>;
-    const spacing = 35;
+    const t = Math.max(0, Math.min(1, (window.innerHeight - 400) / 500));
+    const spacing = 16 + t * 19; // 16px at ≤400px height → 35px at ≥900px
 
     if (allLetters.length > 0) {
       // Pin hero section during transition
