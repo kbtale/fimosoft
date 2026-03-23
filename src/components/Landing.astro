@@ -202,7 +202,8 @@ const t = translations[locale];
     line-height: 0.8;
     width: clamp(16rem, 50vw, 65rem);
     filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
-    pointer-events: none;
+    pointer-events: auto;
+    cursor: pointer;
   }
 
   .word {
@@ -220,10 +221,7 @@ const t = translations[locale];
     opacity: 0;
     transform: translateY(50px);
     filter: blur(10px);
-    /* Individual letters interaction with no gaps */
-    pointer-events: auto;
-    padding: 0.5rem;
-    margin: -0.5rem;
+    pointer-events: none;
   }
 
   .tagline-block {
@@ -472,12 +470,16 @@ const t = translations[locale];
       ScrollTrigger.refresh();
     });
 
-    // Logo scroll-to-top (delegated click on letters)
+    // Logo scroll-to-top (delegated click on container)
     document.addEventListener("click", (e) => {
       const target = e.target as HTMLElement;
-      const el = target.nodeType === 3 ? target.parentElement : target;
-      if (el?.closest(".letter") && window.scrollY > 100) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+      if (target.closest(".logo-block") && window.scrollY > 100) {
+        const win = window as AppWindow;
+        if (win.appLenis) {
+          win.appLenis.scrollTo(0, { duration: 1.5 });
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
       }
     });
   });

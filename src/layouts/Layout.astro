@@ -26,8 +26,13 @@
 
       gsap.registerPlugin(ScrollTrigger);
 
-      // Initialize Lenis
+      declare global {
+        interface Window {
+          appLenis: Lenis;
+        }
+      }
       const lenis = new Lenis();
+      window.appLenis = lenis;
 
       lenis.on("scroll", ScrollTrigger.update);
 
@@ -52,7 +57,7 @@
           if (href) {
             const target = document.querySelector(href) as HTMLElement;
             if (target) {
-              lenis.scrollTo(target);
+              lenis.scrollTo(target, { duration: 1.5 });
             }
           }
         });
