@@ -27,13 +27,7 @@
       gsap.registerPlugin(ScrollTrigger);
 
       // Initialize Lenis
-      declare global {
-        interface Window {
-          appLenis: Lenis;
-        }
-      }
       const lenis = new Lenis();
-      window.appLenis = lenis;
 
       lenis.on("scroll", ScrollTrigger.update);
 
@@ -109,18 +103,16 @@
             cursor.innerHTML = svgText;
             const svg = cursor.querySelector("svg");
             if (svg) {
+              svg.setAttribute("stroke", "#000000");
               svg.setAttribute("width", "100%");
               svg.setAttribute("height", "100%");
               const innerPaths = svg.querySelectorAll("path");
               innerPaths.forEach((p, index) => {
                 p.classList.add("cursor-path");
-                // Get path length for precise drawing animation
+                // Get path length for drawing animation
                 const length = (p as any).getTotalLength();
                 p.style.setProperty("--path-length", length.toString());
-                p.style.strokeDasharray = length.toString();
-                p.style.strokeDashoffset = length.toString();
-                // Start with a 0.1s base delay
-                p.style.transitionDelay = `${0.1 + index * 0.05}s`;
+                p.style.transitionDelay = `${0.2 + index * 0.1}s`;
               });
               paths = innerPaths as NodeListOf<SVGPathElement>;
               isSvgLoaded = true;
@@ -274,35 +266,36 @@
 
   #custom-cursor {
     display: none;
-    width: 60px;
-    height: 60px;
+    width: 51px;
+    height: 51px;
     background-color: var(--accent-red);
     border-radius: 50%;
     position: fixed;
-    top: -30px;
-    left: -30px;
+    top: -25.5px;
+    left: -25.5px;
     pointer-events: none;
     z-index: 9999;
     mix-blend-mode: difference;
     transition:
       transform 0.1s ease-out,
-      background-color 0.3s ease;
+      background-color 0.2s ease;
     overflow: hidden;
   }
 
   .cursor-path {
     vector-effect: non-scaling-stroke;
-    fill: transparent;
-    stroke: #000000;
     stroke-width: 1px;
+    stroke-dasharray: var(--path-length);
+    stroke-dashoffset: var(--path-length);
     transition:
-      stroke-dashoffset 0.6s cubic-bezier(0.19, 1, 0.22, 1),
-      fill 0.4s ease 0.3s;
+      stroke-dashoffset 1.2s cubic-bezier(0.19, 1, 0.22, 1),
+      fill 0.8s ease 0.6s;
+    fill: transparent;
   }
 
   /* Trigger drawing on hover */
   #custom-cursor.cursor-hover .cursor-path {
-    stroke-dashoffset: 0 !important;
+    stroke-dashoffset: 0;
     fill: #000000;
   }
 
@@ -318,7 +311,6 @@
     height: 70%;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s ease;
   }
 
   #custom-cursor.cursor-active {
