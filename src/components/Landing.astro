@@ -477,7 +477,12 @@ const t = translations[locale];
       const target = e.target as HTMLElement;
       const el = target.nodeType === 3 ? target.parentElement : target;
       if (el?.closest(".letter") && window.scrollY > 100) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        const win = window as AppWindow;
+        if (win.appLenis) {
+          win.appLenis.scrollTo(0, { duration: 1.5 });
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
       }
     });
   });
