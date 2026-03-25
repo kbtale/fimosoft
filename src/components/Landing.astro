@@ -203,7 +203,10 @@ const t = translations[locale];
     width: clamp(16rem, 50vw, 65rem);
     filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
     pointer-events: auto;
-    cursor: pointer;
+  }
+
+  .logo-block.is-scrolled {
+    pointer-events: none;
   }
 
   .word {
@@ -217,11 +220,22 @@ const t = translations[locale];
   }
 
   .letter {
+    position: relative;
     display: inline-block;
     opacity: 0;
     transform: translateY(50px);
     filter: blur(10px);
-    pointer-events: none;
+    pointer-events: auto;
+    padding: 0.5rem;
+    margin: -0.5rem;
+  }
+
+  .logo-block.is-sidebar .letter::after {
+    content: "";
+    position: absolute;
+    inset: -0.2em -1.25em;
+    z-index: 1;
+    pointer-events: auto;
   }
 
   .tagline-block {
@@ -470,16 +484,32 @@ const t = translations[locale];
       ScrollTrigger.refresh();
     });
 
-    // Logo scroll-to-top (delegated click on container)
     document.addEventListener("click", (e) => {
       const target = e.target as HTMLElement;
-      if (target.closest(".logo-block") && window.scrollY > 100) {
+      const el = target.nodeType === 3 ? target.parentElement : target;
+      if (el?.closest(".is-sidebar .letter") && window.scrollY > 100) {
         const win = window as AppWindow;
         if (win.appLenis) {
           win.appLenis.scrollTo(0, { duration: 1.5 });
         } else {
           window.scrollTo({ top: 0, behavior: "smooth" });
         }
+      }
+    });
+
+    const logoBlock = document.querySelector(".logo-block");
+    window.addEventListener("scroll", () => {
+      const scrollY = window.scrollY;
+      if (scrollY > 50) {
+        logoBlock?.classList.add("is-scrolled");
+      } else {
+        logoBlock?.classList.remove("is-scrolled");
+      }
+
+      if (scrollY > 400) {
+        logoBlock?.classList.add("is-sidebar");
+      } else {
+        logoBlock?.classList.remove("is-sidebar");
       }
     });
   });
