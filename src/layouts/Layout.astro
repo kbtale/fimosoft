@@ -85,6 +85,16 @@
         if (!cursor) return;
         cursor.style.display = "block";
         cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+
+        const target = (e.target as HTMLElement).closest(
+          'a, button, [role="button"], .project-card, .media-container',
+        );
+
+        if (target) {
+          cursor.classList.add("cursor-hover");
+        } else {
+          cursor.classList.remove("cursor-hover");
+        }
       };
 
       window.addEventListener("mousemove", updateCursor);
@@ -94,62 +104,6 @@
       window.addEventListener("mouseup", () =>
         cursor?.classList.remove("cursor-active"),
       );
-
-      // Load cursor SVG dynamically
-      let paths: NodeListOf<SVGPathElement> | null = null;
-      let isSvgLoaded = false;
-
-      const loadCursorSVG = async () => {
-        try {
-          const response = await fetch("/images/cross.svg");
-          if (!response.ok) throw new Error("Fetch failed");
-          const svgText = await response.text();
-          if (cursor) {
-            cursor.innerHTML = svgText;
-            const svg = cursor.querySelector("svg");
-            if (svg) {
-              svg.setAttribute("stroke", "#000000");
-              svg.setAttribute("width", "100%");
-              svg.setAttribute("height", "100%");
-              const innerPaths = svg.querySelectorAll("path");
-              innerPaths.forEach((p, index) => {
-                p.classList.add("cursor-path");
-                // Get path length for drawing animation
-                const length = (p as any).getTotalLength();
-                p.style.setProperty("--path-length", length.toString());
-                p.style.transitionDelay = `${0.2 + index * 0.1}s`;
-              });
-              paths = innerPaths as NodeListOf<SVGPathElement>;
-              isSvgLoaded = true;
-            }
-          }
-        } catch (e) {
-          console.warn("Failed to load cursor SVG", e);
-        }
-      };
-
-      loadCursorSVG();
-
-      window.addEventListener("mouseover", (e) => {
-        const target = (e.target as HTMLElement).closest(
-          'a, button, [role="button"], .gallery-img, input[type="submit"], input[type="button"], .logo-block, .media-container',
-        );
-
-        if (
-          target &&
-          isSvgLoaded &&
-          !cursor?.classList.contains("cursor-hover")
-        ) {
-          cursor?.classList.add("cursor-hover");
-          const svg = cursor?.querySelector("svg");
-          if (svg) svg.style.opacity = "1";
-        } else if (!target && cursor?.classList.contains("cursor-hover")) {
-          cursor?.classList.remove("cursor-hover");
-          const svg = cursor?.querySelector("svg");
-          if (svg) svg.style.opacity = "0";
-        }
-      });
-
       document.addEventListener("mouseleave", () => {
         if (cursor) cursor.style.display = "none";
       });
@@ -271,51 +225,70 @@
 
   #custom-cursor {
     display: none;
-    width: 51px;
-    height: 51px;
+    width: 33px;
+    height: 33px;
     background-color: var(--accent-red);
-    border-radius: 50%;
     position: fixed;
-    top: -25.5px;
-    left: -25.5px;
+    top: -16.5px;
+    left: -16.5px;
     pointer-events: none;
     z-index: 9999;
     mix-blend-mode: difference;
+    /* cirlce */
+    clip-path: polygon(
+      50% 0%,
+      65.5% 2.4%,
+      79.4% 9.5%,
+      90.5% 20.6%,
+      97.6% 34.5%,
+      100% 50%,
+      97.6% 65.5%,
+      90.5% 79.4%,
+      79.4% 90.5%,
+      65.5% 97.6%,
+      50% 100%,
+      34.5% 97.6%,
+      20.6% 90.5%,
+      9.5% 79.4%,
+      2.4% 65.5%,
+      0% 50%,
+      2.4% 34.5%,
+      9.5% 20.6%,
+      20.6% 9.5%,
+      34.5% 2.4%
+    );
     transition:
-      transform 0.1s ease-out,
-      background-color 0.2s ease;
-    overflow: hidden;
-  }
-
-  .cursor-path {
-    vector-effect: non-scaling-stroke;
-    stroke-width: 1px;
-    stroke-dasharray: var(--path-length);
-    stroke-dashoffset: var(--path-length);
-    transition:
-      stroke-dashoffset 1.2s cubic-bezier(0.19, 1, 0.22, 1),
-      fill 0.8s ease 0.6s;
-    fill: transparent;
-  }
-
-  /* Trigger drawing on hover */
-  #custom-cursor.cursor-hover .cursor-path {
-    stroke-dashoffset: 0;
-    fill: #000000;
+      transform 0.15s ease-out,
+      background-color 0.3s ease,
+      clip-path 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   #custom-cursor.cursor-hover {
     background-color: #ffffff;
-  }
-
-  #custom-cursor svg {
-    position: absolute;
-    top: 15%;
-    left: 15%;
-    width: 70%;
-    height: 70%;
-    opacity: 0;
-    pointer-events: none;
+    /* Morph to triangle */
+    clip-path: polygon(
+      50% 0%,
+      58.3% 16.7%,
+      66.7% 33.3%,
+      75% 50%,
+      83.3% 66.7%,
+      91.7% 83.3%,
+      100% 100%,
+      83.3% 100%,
+      66.7% 100%,
+      50% 100%,
+      33.3% 100%,
+      16.7% 100%,
+      0% 100%,
+      8.3% 83.3%,
+      16.7% 66.7%,
+      25% 50%,
+      33.3% 33.3%,
+      41.7% 16.7%,
+      50% 0%,
+      50% 0%
+    );
+    transform: scale(1.4);
   }
 
   #custom-cursor.cursor-active {
