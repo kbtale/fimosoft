@@ -1,5 +1,6 @@
 ---
 import type { Game } from "../types/game";
+import SlidingText from "./ui/SlidingText.astro";
 
 interface Props {
   game: Game;
@@ -48,10 +49,7 @@ const galleryImages = game.screenshots.slice(1);
             </div>
           </div>
           <button class="view-toggle-btn btn-sliding-text">
-            <div class="btn-text-wrapper">
-              <span class="btn-text-primary">Details</span>
-              <span class="btn-text-secondary">Details</span>
-            </div>
+            <SlidingText>Details</SlidingText>
           </button>
         </div>
       </div>
@@ -83,10 +81,7 @@ const galleryImages = game.screenshots.slice(1);
               rel="noopener noreferrer"
               class="steam-button btn-sliding-text"
             >
-              <div class="btn-text-wrapper">
-                <span class="btn-text-primary">View on Steam</span>
-                <span class="btn-text-secondary">View on Steam</span>
-              </div>
+              <SlidingText>View on Steam</SlidingText>
             </a>
           )
         }

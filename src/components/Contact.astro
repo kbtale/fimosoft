@@ -1,5 +1,6 @@
 ---
 import { translations, type Locale } from "../i18n/translations";
+import SlidingText from "./ui/SlidingText.astro";
 
 interface Props {
   locale: Locale;
@@ -170,10 +171,7 @@ const emailLabel = "fimosoftgames@outlook.com";
 
       <div class="email-display section-email">
         <a href={"mailto:" + emailLabel} class="email-link btn-sliding-text">
-          <div class="btn-text-wrapper">
-            <span class="btn-text-primary">{emailLabel}</span>
-            <span class="btn-text-secondary">{emailLabel}</span>
-          </div>
+          <SlidingText>{emailLabel}</SlidingText>
         </a>
       </div>
     </div>
