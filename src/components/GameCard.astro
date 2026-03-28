@@ -123,7 +123,7 @@ const galleryImages = game.screenshots.slice(1);
       | HTMLImageElement;
     if (!canvas || !media) return;
 
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
     let mouseX = -1;
     let mouseY = -1;
     let isHovering = false;
@@ -132,7 +132,7 @@ const galleryImages = game.screenshots.slice(1);
     // Offscreen canvas for sampling
     const sampleSize = 32;
     const sampler = new OffscreenCanvas(sampleSize, sampleSize);
-    const samplerCtx = sampler.getContext("2d")!;
+    const samplerCtx = sampler.getContext("2d", { willReadFrequently: true })!;
 
     function resize() {
       const rect = container.getBoundingClientRect();

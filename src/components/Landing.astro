@@ -519,7 +519,7 @@ const t = translations[locale];
   // Halftone dither renderer for background video
   const video = document.getElementById("bg-video") as HTMLVideoElement;
   const canvas = document.getElementById("dither-canvas") as HTMLCanvasElement;
-  const ctx = canvas.getContext("2d")!;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
 
   const DOT_SPACING = 8;
   const MAX_DOT_SIZE = 5;
