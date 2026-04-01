@@ -21,6 +21,26 @@
       "es": "EN"
     }
   },
+  "heroIntro": {
+    "en": [
+      "We're working in the shadows to bring you something chilling...",
+      "The darkness hides secrets yet to be unveiled."
+    ],
+    "es": [
+      "Estamos trabajando en las sombras para traerte algo escalofriante...",
+      "La oscuridad oculta secretos que aún están por revelarse."
+    ]
+  },
+  "buttons": {
+    "details": {
+      "en": "Details",
+      "es": "Detalles"
+    },
+    "steam": {
+      "en": "View on Steam",
+      "es": "Ver en Steam"
+    }
+  },
   "contact": {
     "title": {
       "en": "Contact Us",
@@ -34,6 +54,11 @@
       "email": "mailto:fimosoftgames@outlook.com"
     },
     "footer": {
+      "logo": "FIMOSOFT",
+      "manifesto": {
+        "en": "WHERE NIGHTMARES TAKE SHAPE",
+        "es": "DONDE LAS PESADILLAS TOMAN FORMA"
+      },
       "copyright": {
         "en": "© 2026 FIMOSOFT",
         "es": "© 2026 FIMOSOFT"
