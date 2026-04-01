@@ -1,0 +1,47 @@
+{
+  "title": {
+    "en": "Fimosoft | Where nightmares take shape",
+    "es": "Fimosoft | Donde las pesadillas toman forma"
+  },
+  "tagline": {
+    "en": ["Where", "Nightmares", "Take shape"],
+    "es": ["Donde", "Las pesadillas", "Toman forma"]
+  },
+  "gamesTitle": {
+    "en": "Our Games",
+    "es": "Nuestros Juegos"
+  },
+  "nav": {
+    "contact": {
+      "en": "Contact Us",
+      "es": "Contacto"
+    },
+    "language": {
+      "en": "ES",
+      "es": "EN"
+    }
+  },
+  "contact": {
+    "title": {
+      "en": "Contact Us",
+      "es": "Contáctanos"
+    },
+    "socials": {
+      "x": "https://x.com/fimosoft",
+      "instagram": "https://instagram.com/fimosoft",
+      "tiktok": "https://tiktok.com/@fimosoft",
+      "youtube": "https://youtube.com/@fimosoft",
+      "email": "mailto:fimosoftgames@outlook.com"
+    },
+    "footer": {
+      "copyright": {
+        "en": "© 2026 FIMOSOFT",
+        "es": "© 2026 FIMOSOFT"
+      },
+      "rights": {
+        "en": "ALL NIGHTMARES RESERVED",
+        "es": "TODOS LOS SUSTOS RESERVADOS"
+      }
+    }
+  }
+}
