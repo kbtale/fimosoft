@@ -1,5 +1,6 @@
 import type { Game, RawGame } from "../types/game";
 import gamesData from "../data/games.json";
+import siteData from "../data/site.json";
 
 const games = gamesData as RawGame[];
 
@@ -21,49 +22,37 @@ function getLocalizedGames(lang: 'en' | 'es'): Game[] {
 
 export const translations = {
   en: {
-    title: "Fimosoft | Where nightmares take shape",
-    tagline: ["Where", "Nightmares", "Take shape"],
-    gamesTitle: "Our Games",
+    title: siteData.title.en,
+    tagline: siteData.tagline.en,
+    gamesTitle: siteData.gamesTitle.en,
     nav: {
-      contact: "Contact Us",
-      language: "ES"
+      contact: siteData.nav.contact.en,
+      language: siteData.nav.language.en
     },
     contact: {
-      title: "Contact Us",
-      socials: {
-        x: "https://x.com/fimosoft",
-        instagram: "https://instagram.com/fimosoft",
-        tiktok: "https://tiktok.com/@fimosoft",
-        youtube: "https://youtube.com/@fimosoft",
-        email: "mailto:fimosoftgames@outlook.com"
-      },
+      title: siteData.contact.title.en,
+      socials: siteData.contact.socials,
       footer: {
-        copyright: "© 2026 FIMOSOFT",
-        rights: "ALL NIGHTMARES RESERVED"
+        copyright: siteData.contact.footer.copyright.en,
+        rights: siteData.contact.footer.rights.en
       }
     },
     games: getLocalizedGames('en')
   },
   es: {
-    title: "Fimosoft | Donde las pesadillas toman forma",
-    tagline: ["Donde", "Las pesadillas", "Toman forma"],
-    gamesTitle: "Nuestros Juegos",
+    title: siteData.title.es,
+    tagline: siteData.tagline.es,
+    gamesTitle: siteData.gamesTitle.es,
     nav: {
-      contact: "Contacto",
-      language: "EN"
+      contact: siteData.nav.contact.es,
+      language: siteData.nav.language.es
     },
     contact: {
-      title: "Contáctanos",
-      socials: {
-        x: "https://x.com/fimosoft",
-        instagram: "https://instagram.com/fimosoft",
-        tiktok: "https://tiktok.com/@fimosoft",
-        youtube: "https://youtube.com/@fimosoft",
-        email: "mailto:fimosoftgames@outlook.com"
-      },
+      title: siteData.contact.title.es,
+      socials: siteData.contact.socials,
       footer: {
-        copyright: "© 2026 FIMOSOFT",
-        rights: "TODOS LOS SUSTOS RESERVADOS"
+        copyright: siteData.contact.footer.copyright.es,
+        rights: siteData.contact.footer.rights.es
       }
     },
     games: getLocalizedGames('es')
