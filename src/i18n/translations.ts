@@ -25,6 +25,11 @@ export const translations = {
     title: siteData.title.en,
     tagline: siteData.tagline.en,
     gamesTitle: siteData.gamesTitle.en,
+    heroIntro: siteData.heroIntro.en,
+    buttons: {
+      details: siteData.buttons.details.en,
+      steam: siteData.buttons.steam.en
+    },
     nav: {
       contact: siteData.nav.contact.en,
       language: siteData.nav.language.en
@@ -33,6 +38,8 @@ export const translations = {
       title: siteData.contact.title.en,
       socials: siteData.contact.socials,
       footer: {
+        logo: siteData.contact.footer.logo,
+        manifesto: siteData.contact.footer.manifesto.en,
         copyright: siteData.contact.footer.copyright.en,
         rights: siteData.contact.footer.rights.en
       }
@@ -43,6 +50,11 @@ export const translations = {
     title: siteData.title.es,
     tagline: siteData.tagline.es,
     gamesTitle: siteData.gamesTitle.es,
+    heroIntro: siteData.heroIntro.es,
+    buttons: {
+      details: siteData.buttons.details.es,
+      steam: siteData.buttons.steam.es
+    },
     nav: {
       contact: siteData.nav.contact.es,
       language: siteData.nav.language.es
@@ -51,6 +63,8 @@ export const translations = {
       title: siteData.contact.title.es,
       socials: siteData.contact.socials,
       footer: {
+        logo: siteData.contact.footer.logo,
+        manifesto: siteData.contact.footer.manifesto.es,
         copyright: siteData.contact.footer.copyright.es,
         rights: siteData.contact.footer.rights.es
       }

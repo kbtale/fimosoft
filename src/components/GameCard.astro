@@ -1,12 +1,15 @@
 ---
 import type { Game } from "../types/game";
 import SlidingText from "./ui/SlidingText.astro";
+import { translations, type Locale } from "../i18n/translations";
 
 interface Props {
   game: Game;
+  locale: Locale;
 }
 
-const { game } = Astro.props;
+const { game, locale } = Astro.props;
+const t = translations[locale];
 const hasVideo = !!game.videoUrl;
 const coverImage = game.screenshots.length > 0 ? game.screenshots[0] : "";
 const galleryImages = game.screenshots.slice(1);
@@ -69,7 +72,7 @@ const galleryImages = game.screenshots.slice(1);
             </div>
           </div>
           <button class="view-toggle-btn btn-sliding-text">
-            <SlidingText>Details</SlidingText>
+            <SlidingText>{t.buttons.details}</SlidingText>
           </button>
         </div>
       </div>
@@ -101,7 +104,7 @@ const galleryImages = game.screenshots.slice(1);
               rel="noopener noreferrer"
               class="steam-button btn-sliding-text"
             >
-              <SlidingText>View on Steam</SlidingText>
+              <SlidingText>{t.buttons.steam}</SlidingText>
             </a>
           )
         }

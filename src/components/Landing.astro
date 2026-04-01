@@ -93,7 +93,7 @@ const t = translations[locale];
       <section class="projects-placeholder">
         <h3 class="projects-title section-title-games">{t.gamesTitle}</h3>
         <div class="project-cards-grid">
-          {t.games.map((game) => <GameCard game={game} />)}
+          {t.games.map((game) => <GameCard game={game} locale={locale} />)}
         </div>
       </section>
 
