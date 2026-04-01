@@ -87,7 +87,7 @@
         cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
 
         const target = (e.target as HTMLElement).closest(
-          'a, button, [role="button"], .project-card, .media-container',
+          'a, button, [role="button"], .project-card',
         );
 
         if (target) {

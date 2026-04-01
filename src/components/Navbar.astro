@@ -1,5 +1,6 @@
 ---
 import { translations, type Locale } from "../i18n/translations";
+import SlidingText from "./ui/SlidingText.astro";
 
 interface Props {
   locale: Locale;
@@ -15,17 +16,11 @@ const langLabel = locale.toUpperCase();
 <nav class="navbar">
   <div class="nav-links">
     <a href="#contact" class="nav-btn btn-sliding-text">
-      <div class="btn-text-wrapper">
-        <span class="btn-text-primary">{t.nav.contact}</span>
-        <span class="btn-text-secondary">{t.nav.contact}</span>
-      </div>
+      <SlidingText>{t.nav.contact}</SlidingText>
     </a>
     <div class="nav-divider"></div>
     <a href={langLink} class="nav-btn lang-toggle btn-sliding-text">
-      <div class="btn-text-wrapper">
-        <span class="btn-text-primary">{langLabel}</span>
-        <span class="btn-text-secondary">{langLabel}</span>
-      </div>
+      <SlidingText>{langLabel}</SlidingText>
     </a>
   </div>
 </nav>

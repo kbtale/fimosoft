@@ -1,13 +1,27 @@
 import type { Locale } from '../i18n/translations';
 
-/**
- * Represents a game's localized metadata.
- */
-export interface GameContent {
-  title: string;
-  description: string;
+export interface LocalizedField {
+  en: string;
+  es: string;
 }
 
+/**
+ * The raw structure in games.json
+ */
+export interface RawGame {
+  id: string;
+  videoUrl?: string;
+  steamUrl?: string;
+  screenshots: string[];
+  title: LocalizedField;
+  genre: LocalizedField;
+  releaseDate: LocalizedField;
+  description: LocalizedField;
+}
+
+/**
+ * The flat structure used by components after localization
+ */
 export interface Game {
   id: string;
   title: string;

@@ -26,7 +26,7 @@ const t = translations[locale];
         playsinline
         class="bg-video-hidden"
       >
-        <source src="/videos/hero-bg.mp4" type="video/mp4" />
+        <source src={t.heroVideo} type="video/mp4" />
       </video>
       <canvas id="dither-canvas"></canvas>
     </div>
@@ -85,15 +85,15 @@ const t = translations[locale];
         baseRotation={3}
         blurStrength={3}
       >
-        We're working in the shadows to bring you something chilling...
+        {t.heroIntro[0]}
         <br />
-        The darkness hides secrets yet to be unveiled.
+        {t.heroIntro[1]}
       </ScrollReveal>
 
       <section class="projects-placeholder">
         <h3 class="projects-title section-title-games">{t.gamesTitle}</h3>
         <div class="project-cards-grid">
-          {t.games.map((game) => <GameCard game={game} />)}
+          {t.games.map((game) => <GameCard game={game} locale={locale} />)}
         </div>
       </section>
 
@@ -519,7 +519,7 @@ const t = translations[locale];
   // Halftone dither renderer for background video
   const video = document.getElementById("bg-video") as HTMLVideoElement;
   const canvas = document.getElementById("dither-canvas") as HTMLCanvasElement;
-  const ctx = canvas.getContext("2d")!;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
 
   const DOT_SPACING = 8;
   const MAX_DOT_SIZE = 5;
