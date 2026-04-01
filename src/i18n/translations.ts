@@ -25,6 +25,7 @@ export const translations = {
     title: siteData.title.en,
     tagline: siteData.tagline.en,
     gamesTitle: siteData.gamesTitle.en,
+    heroVideo: siteData.heroVideo,
     heroIntro: siteData.heroIntro.en,
     buttons: {
       details: siteData.buttons.details.en,
@@ -50,6 +51,7 @@ export const translations = {
     title: siteData.title.es,
     tagline: siteData.tagline.es,
     gamesTitle: siteData.gamesTitle.es,
+    heroVideo: siteData.heroVideo,
     heroIntro: siteData.heroIntro.es,
     buttons: {
       details: siteData.buttons.details.es,
