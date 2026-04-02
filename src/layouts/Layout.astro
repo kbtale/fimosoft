@@ -86,14 +86,20 @@
         cursor.style.display = "block";
         cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
 
-        const target = (e.target as HTMLElement).closest(
-          'a, button, [role="button"], .project-card',
-        );
+        const targetNode = e.target as HTMLElement;
+        const interactiveTarget = targetNode.closest('a, button, [role="button"]');
+        const cardTarget = targetNode.closest(".game-card");
 
-        if (target) {
+        if (interactiveTarget) {
           cursor.classList.add("cursor-hover");
         } else {
           cursor.classList.remove("cursor-hover");
+        }
+
+        if (cardTarget) {
+          cursor.classList.add("cursor-card-hover");
+        } else {
+          cursor.classList.remove("cursor-card-hover");
         }
       };
 
@@ -288,6 +294,11 @@
       50% 0%,
       50% 0%
     );
+    transform: scale(1.4);
+  }
+
+  #custom-cursor.cursor-card-hover {
+    background-color: #ffffff;
     transform: scale(1.4);
   }
 

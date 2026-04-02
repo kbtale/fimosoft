@@ -1,7 +1,7 @@
 [
   {
     "id": "prologue",
-    "videoUrl": "/videos/games/prologue-bg.mp4",
+    "videoUrl": "/videos/games/prologue.mp4",
     "steamUrl": "https://store.steampowered.com/app/2904740/Day_at_the_Office__Prologue/",
     "screenshots": [
       "/images/games/dato-p1.jpg",
@@ -28,6 +28,7 @@
   },
   {
     "id": "signed",
+    "videoUrl": "",
     "steamUrl": "https://store.steampowered.com/app/3537780/Day_at_the_Office__Signed/",
     "screenshots": [
       "/images/games/dato-s1.jpg",
@@ -53,6 +54,7 @@
   },
   {
     "id": "hippocratic",
+    "videoUrl": "/videos/games/prologue.mp4",
     "steamUrl": "https://store.steampowered.com/app/4404990/Hippocratic/",
     "screenshots": [
       "/images/games/hpc1.jpg",
