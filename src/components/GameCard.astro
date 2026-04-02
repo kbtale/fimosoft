@@ -170,7 +170,7 @@ const galleryImages = game.screenshots.slice(1);
 
     const tl = gsap.timeline({
       paused: true,
-      defaults: { ease: "power3.inOut", duration: 0.8 },
+      defaults: { ease: "power3.inOut", duration: 0.8 }
     });
 
     if (isDesktop()) {
@@ -471,12 +471,9 @@ const galleryImages = game.screenshots.slice(1);
     cursor: pointer;
   }
 
-  .view-toggle-btn.btn-active .btn-text-wrapper {
+  .view-toggle-btn.btn-active :global(.btn-text-wrapper),
+  .view-toggle-btn.btn-active:hover :global(.btn-text-wrapper) {
     transform: translateY(-1.5rem);
-  }
-
-  .view-toggle-btn.btn-active:hover .btn-text-wrapper {
-    transform: translateY(0);
   }
 
   .secondary-title {
