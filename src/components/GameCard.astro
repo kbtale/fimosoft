@@ -130,6 +130,9 @@ const galleryImages = game.screenshots.slice(1);
 
 <script>
   import { gsap } from "gsap";
+  import type Lenis from "lenis";
+
+  type AppWindow = Window & typeof globalThis & { appLenis?: Lenis };
 
   function initCard(card: HTMLElement) {
     if (card.dataset.initialized) return;
@@ -273,6 +276,16 @@ const galleryImages = game.screenshots.slice(1);
 
     const toggle = () => {
       if (!isOpen) {
+        const win = window as AppWindow;
+        if (win.appLenis) {
+          win.appLenis.scrollTo(card, { offset: -120 });
+        } else {
+          const yOffset = -120;
+          const y =
+            card.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: "smooth" });
+        }
+
         tl.play();
         btn?.classList.add("btn-active");
         if (btnWrapper) {
