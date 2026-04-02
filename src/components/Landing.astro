@@ -385,13 +385,16 @@ const t = translations[locale];
 
       // Capture element positions after entrance animation
       tl.then(() => {
-        let cumulativeY = 32;
+        const isMobile = window.innerWidth < 768;
+        const sidebarX = isMobile ? 16 : 32;
+        const sidebarScale = isMobile ? 0.12 : 0.2;
+        const sidebarSpacing = isMobile ? spacing * 0.6 : spacing;
+        let cumulativeY = isMobile ? 16 : 32;
 
         allLetters.forEach((letter, index) => {
           const rect = letter.getBoundingClientRect();
 
-          // Destination: X-center=32, Y-center=cumulativeY
-          const targetX = 32 - (rect.left + rect.width / 2);
+          const targetX = sidebarX - (rect.left + rect.width / 2);
           const targetY = cumulativeY - (rect.top + rect.height / 2);
 
           scrollTl.to(
@@ -417,7 +420,7 @@ const t = translations[locale];
             letter,
             {
               rotation: 90,
-              scale: 0.2,
+              scale: sidebarScale,
               transformOrigin: "center center",
               ease: "none",
             },
@@ -428,9 +431,16 @@ const t = translations[locale];
           const nextLetter = allLetters[index + 1];
           const nextText = nextLetter?.textContent?.trim();
 
-          let gap = spacing;
-          if (nextText === "I" || currentText === "I") {
-            gap = spacing * 0.75;
+          let gap = sidebarSpacing;
+          const pair = currentText + nextText;
+          if (pair === "IM") {
+            gap = sidebarSpacing * 0.9;
+          } else if (pair === "MO") {
+            gap = sidebarSpacing * 1.2;
+          } else if (nextText === "I" || currentText === "I") {
+            gap = sidebarSpacing * 0.75;
+          } else if (nextText === "M" || currentText === "M") {
+            gap = sidebarSpacing * 1.3;
           }
           cumulativeY += gap;
         });
