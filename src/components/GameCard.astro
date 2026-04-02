@@ -370,16 +370,15 @@ const galleryImages = game.screenshots.slice(1);
 
   .media-base {
     z-index: 1;
-    filter: saturate(1) contrast(1);
+    filter: saturate(0.7) brightness(0.5);
     transform: scale(1);
   }
 
   .media-sketch {
     z-index: 2;
     opacity: 0;
-    mix-blend-mode: color-dodge;
-    filter: invert(1) grayscale(1) contrast(5);
-    transform: translate(1px, 1px) scale(1);
+    filter: saturate(1.1) brightness(1.2);
+    transform: scale(1);
 
     /* Lantern Effect Mask */
     -webkit-mask-image: radial-gradient(
@@ -395,10 +394,6 @@ const galleryImages = game.screenshots.slice(1);
       transparent 100%
     );
     will-change: mask-image;
-  }
-
-  .media-container:hover .media-base {
-    filter: saturate(1.8) contrast(1.2) brightness(1.1);
   }
 
   .media-container:hover .media-sketch {
