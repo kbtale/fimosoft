@@ -188,10 +188,15 @@
 
   /* Sliding Text */
   .btn-sliding-text {
-    height: 1.5rem;
-    overflow: hidden;
+    overflow: visible;
     display: inline-block;
     vertical-align: middle;
+    position: relative;
+  }
+
+  .sliding-text-crop {
+    height: 1.5rem;
+    overflow: hidden;
   }
 
   .btn-text-wrapper {
@@ -203,6 +208,29 @@
 
   .btn-sliding-text:hover .btn-text-wrapper {
     transform: translateY(-1.5rem);
+  }
+
+  .nav-btn,
+  .view-toggle-btn,
+  .steam-button,
+  .social-btn,
+  .email-link {
+    position: relative;
+    overflow: visible;
+  }
+
+  .nav-btn::before,
+  .view-toggle-btn::before,
+  .steam-button::before,
+  .social-btn::before,
+  .email-link::before {
+    content: "";
+    position: absolute;
+    top: -25px;
+    left: -25px;
+    right: -25px;
+    bottom: -25px;
+    z-index: 1;
   }
 
   .btn-text-primary,
@@ -312,12 +340,12 @@
       50% 0%,
       50% 0%
     );
-    --cursor-scale: 1.0;
+    --cursor-scale: 1;
   }
 
   #custom-cursor.cursor-card-hover .cursor-inner {
     background-color: #ffffff;
-    --cursor-scale: 1.0;
+    --cursor-scale: 1;
   }
 
   #custom-cursor.cursor-active .cursor-inner {
