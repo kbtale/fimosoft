@@ -500,7 +500,7 @@ const t = translations[locale];
       if (el?.closest(".is-sidebar .letter") && window.scrollY > 100) {
         const win = window as AppWindow;
         if (win.appLenis) {
-          win.appLenis.scrollTo(0, { duration: 1.5 });
+          win.appLenis.scrollTo(0, { duration: 2.5 });
         } else {
           window.scrollTo({ top: 0, behavior: "smooth" });
         }

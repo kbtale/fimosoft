@@ -130,6 +130,9 @@ const galleryImages = game.screenshots.slice(1);
 
 <script>
   import { gsap } from "gsap";
+  import type Lenis from "lenis";
+
+  type AppWindow = Window & typeof globalThis & { appLenis?: Lenis };
 
   function initCard(card: HTMLElement) {
     if (card.dataset.initialized) return;
@@ -269,13 +272,53 @@ const galleryImages = game.screenshots.slice(1);
         .to(genresPanel, { height: "auto", opacity: 1 }, 0);
     }
 
+    const btnWrapper = btn?.querySelector(".btn-text-wrapper");
+
     const toggle = () => {
       if (!isOpen) {
+        const win = window as AppWindow;
+        if (win.appLenis) {
+          win.appLenis.scrollTo(card, { offset: -120, duration: 1.2 });
+        } else {
+          const yOffset = -120;
+          const y =
+            card.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: "smooth" });
+        }
+
         tl.play();
         btn?.classList.add("btn-active");
+        if (btnWrapper) {
+          gsap.fromTo(
+            btnWrapper,
+            { y: -24 },
+            {
+              y: -24,
+              duration: 0.8,
+              ease: "power3.inOut",
+              onComplete: () => {
+                gsap.set(btnWrapper, { clearProps: "transform" });
+              },
+            },
+          );
+        }
       } else {
         tl.reverse();
         btn?.classList.remove("btn-active");
+        if (btnWrapper) {
+          gsap.fromTo(
+            btnWrapper,
+            { y: 0 },
+            {
+              y: 0,
+              duration: 0.8,
+              ease: "power3.inOut",
+              onComplete: () => {
+                gsap.set(btnWrapper, { clearProps: "transform" });
+              },
+            },
+          );
+        }
       }
       isOpen = !isOpen;
     };
@@ -471,11 +514,11 @@ const galleryImages = game.screenshots.slice(1);
     cursor: pointer;
   }
 
-  .view-toggle-btn.btn-active .btn-text-wrapper {
+  .view-toggle-btn.btn-active :global(.btn-text-wrapper) {
     transform: translateY(-1.5rem);
   }
 
-  .view-toggle-btn.btn-active:hover .btn-text-wrapper {
+  .view-toggle-btn.btn-active:hover :global(.btn-text-wrapper) {
     transform: translateY(0);
   }
 
