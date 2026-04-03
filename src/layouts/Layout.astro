@@ -67,7 +67,7 @@
   <body>
     <slot />
     <div id="custom-cursor">
-      <!-- SVG content loaded via script -->
+      <div class="cursor-inner"></div>
     </div>
 
     <script is:inline>
@@ -87,12 +87,22 @@
         cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
 
         const targetNode = e.target as HTMLElement;
-        const interactiveTarget = targetNode.closest('a, button, [role="button"]');
+        const interactiveTarget = targetNode.closest(
+          'a, button, [role="button"]',
+        ) as HTMLElement | null;
         const cardTarget = targetNode.closest(".game-card");
 
         if (interactiveTarget) {
+          const rect = interactiveTarget.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          const angle =
+            Math.atan2(centerY - e.clientY, centerX - e.clientX) *
+            (180 / Math.PI);
+          cursor.style.setProperty("--cursor-rotate", `${angle + 90}deg`);
           cursor.classList.add("cursor-hover");
         } else {
+          cursor.style.setProperty("--cursor-rotate", "0deg");
           cursor.classList.remove("cursor-hover");
         }
 
@@ -233,13 +243,21 @@
     display: none;
     width: 33px;
     height: 33px;
-    background-color: var(--accent-red);
     position: fixed;
     top: -16.5px;
     left: -16.5px;
     pointer-events: none;
     z-index: 9999;
     mix-blend-mode: difference;
+    transition: transform 0.15s ease-out;
+  }
+
+  .cursor-inner {
+    width: 100%;
+    height: 100%;
+    background-color: var(--accent-red);
+    rotate: var(--cursor-rotate, 0deg);
+    scale: var(--cursor-scale, 1);
     /* cirlce */
     clip-path: polygon(
       50% 0%,
@@ -264,12 +282,12 @@
       34.5% 2.4%
     );
     transition:
-      transform 0.15s ease-out,
+      scale 0.15s ease-out,
       background-color 0.3s ease,
       clip-path 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  #custom-cursor.cursor-hover {
+  #custom-cursor.cursor-hover .cursor-inner {
     background-color: #ffffff;
     /* Morph to triangle */
     clip-path: polygon(
@@ -294,16 +312,16 @@
       50% 0%,
       50% 0%
     );
-    transform: scale(1.4);
+    --cursor-scale: 1.0;
   }
 
-  #custom-cursor.cursor-card-hover {
+  #custom-cursor.cursor-card-hover .cursor-inner {
     background-color: #ffffff;
-    transform: scale(1.4);
+    --cursor-scale: 1.0;
   }
 
-  #custom-cursor.cursor-active {
-    transform: scale(0.85);
+  #custom-cursor.cursor-active .cursor-inner {
+    --cursor-scale: 0.8;
   }
 
   ::selection {
