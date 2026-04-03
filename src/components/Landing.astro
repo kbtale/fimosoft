@@ -306,6 +306,112 @@ const t = translations[locale];
 
   type AppWindow = Window & typeof globalThis & { appLenis?: Lenis };
 
+  let resizeTimer: number | undefined;
+  let heroScrollTimeline: gsap.core.Timeline | null = null;
+
+  const clearHeroScrollTimeline = () => {
+    if (!heroScrollTimeline) return;
+    heroScrollTimeline.scrollTrigger?.kill();
+    heroScrollTimeline.kill();
+    heroScrollTimeline = null;
+  };
+
+  const buildHeroScrollTimeline = () => {
+    clearHeroScrollTimeline();
+
+    const allLetters = document.querySelectorAll(
+      ".letter",
+    ) as NodeListOf<HTMLElement>;
+
+    if (allLetters.length === 0) return;
+
+    const t = Math.max(0, Math.min(1, (window.innerHeight - 400) / 500));
+    const spacing = 16 + t * 19;
+
+    const scrollTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".hero-section",
+        start: "top top",
+        end: "+=100%",
+        scrub: 0.5,
+        pin: true,
+        pinSpacing: false,
+      },
+    });
+
+    const isMobile = window.innerWidth < 768;
+    const sidebarX = isMobile ? 16 : 32;
+    const sidebarScale = isMobile ? 0.12 : 0.2;
+    const sidebarSpacing = isMobile ? spacing * 0.6 : spacing;
+    let cumulativeY = isMobile ? 16 : 32;
+
+    allLetters.forEach((letter, index) => {
+      const rect = letter.getBoundingClientRect();
+
+      const targetX = sidebarX - (rect.left + rect.width / 2);
+      const targetY = cumulativeY - (rect.top + rect.height / 2);
+
+      scrollTl.to(
+        letter,
+        {
+          x: targetX,
+          ease: "power1.out",
+        },
+        0,
+      );
+
+      scrollTl.to(
+        letter,
+        {
+          y: targetY,
+          ease: "power1.in",
+        },
+        0,
+      );
+
+      scrollTl.to(
+        letter,
+        {
+          rotation: 90,
+          scale: sidebarScale,
+          transformOrigin: "center center",
+          ease: "none",
+        },
+        0,
+      );
+
+      const currentText = letter.textContent?.trim();
+      const nextLetter = allLetters[index + 1];
+      const nextText = nextLetter?.textContent?.trim();
+
+      let gap = sidebarSpacing;
+      const pair = currentText + nextText;
+      if (pair === "IM") {
+        gap = sidebarSpacing * 0.9;
+      } else if (pair === "MO") {
+        gap = sidebarSpacing * 1.2;
+      } else if (nextText === "I" || currentText === "I") {
+        gap = sidebarSpacing * 0.75;
+      } else if (nextText === "M" || currentText === "M") {
+        gap = sidebarSpacing * 1.3;
+      }
+      cumulativeY += gap;
+    });
+
+    scrollTl.to(
+      ".tagline-block",
+      {
+        opacity: 0,
+        x: 50,
+        filter: "blur(10px)",
+        ease: "power2.inOut",
+      },
+      0,
+    );
+
+    heroScrollTimeline = scrollTl;
+  };
+
   document.addEventListener("DOMContentLoaded", () => {
     // Prevent scrolling during animation
     document.body.style.overflow = "hidden";
@@ -364,100 +470,10 @@ const t = translations[locale];
         "-=0.2",
       );
 
-    const allLetters = document.querySelectorAll(
-      ".letter",
-    ) as NodeListOf<HTMLElement>;
-    const t = Math.max(0, Math.min(1, (window.innerHeight - 400) / 500));
-    const spacing = 16 + t * 19; // 16px at ≤400px height → 35px at ≥900px
-
-    if (allLetters.length > 0) {
-      // Pin hero section during transition
-      const scrollTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: ".hero-section",
-          start: "top top",
-          end: "+=100%",
-          scrub: 0.5,
-          pin: true,
-          pinSpacing: false, // Allow content to scroll up immediately
-        },
-      });
-
-      // Capture element positions after entrance animation
-      tl.then(() => {
-        const isMobile = window.innerWidth < 768;
-        const sidebarX = isMobile ? 16 : 32;
-        const sidebarScale = isMobile ? 0.12 : 0.2;
-        const sidebarSpacing = isMobile ? spacing * 0.6 : spacing;
-        let cumulativeY = isMobile ? 16 : 32;
-
-        allLetters.forEach((letter, index) => {
-          const rect = letter.getBoundingClientRect();
-
-          const targetX = sidebarX - (rect.left + rect.width / 2);
-          const targetY = cumulativeY - (rect.top + rect.height / 2);
-
-          scrollTl.to(
-            letter,
-            {
-              x: targetX,
-              ease: "power1.out",
-            },
-            0,
-          );
-
-          scrollTl.to(
-            letter,
-            {
-              y: targetY,
-              ease: "power1.in",
-            },
-            0,
-          );
-
-          // Rotation and scaling
-          scrollTl.to(
-            letter,
-            {
-              rotation: 90,
-              scale: sidebarScale,
-              transformOrigin: "center center",
-              ease: "none",
-            },
-            0,
-          );
-
-          const currentText = letter.textContent?.trim();
-          const nextLetter = allLetters[index + 1];
-          const nextText = nextLetter?.textContent?.trim();
-
-          let gap = sidebarSpacing;
-          const pair = currentText + nextText;
-          if (pair === "IM") {
-            gap = sidebarSpacing * 0.9;
-          } else if (pair === "MO") {
-            gap = sidebarSpacing * 1.2;
-          } else if (nextText === "I" || currentText === "I") {
-            gap = sidebarSpacing * 0.75;
-          } else if (nextText === "M" || currentText === "M") {
-            gap = sidebarSpacing * 1.3;
-          }
-          cumulativeY += gap;
-        });
-
-        // Fade out tagline
-        scrollTl.to(
-          ".tagline-block",
-          {
-            opacity: 0,
-            x: 50,
-            filter: "blur(10px)",
-            ease: "power2.inOut",
-          },
-          0,
-        );
-      });
-    }
+    tl.then(() => {
+      buildHeroScrollTimeline();
+      ScrollTrigger.refresh();
+    });
 
     // Projects Section Reveal
     gsap.to(".section-title-games", {
@@ -521,6 +537,14 @@ const t = translations[locale];
       } else {
         logoBlock?.classList.remove("is-sidebar");
       }
+    });
+
+    window.addEventListener("resize", () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        buildHeroScrollTimeline();
+        ScrollTrigger.refresh();
+      }, 150);
     });
   });
 </script>
