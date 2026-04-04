@@ -545,77 +545,73 @@ const t = translations[locale];
   const video = document.getElementById("bg-video") as HTMLVideoElement;
   const canvas = document.getElementById("dither-canvas") as HTMLCanvasElement;
 
-  if (typeof OffscreenCanvas === "undefined") {
-    console.warn("Dither background disabled: OffscreenCanvas not supported.");
-    return;
-  }
+  if (typeof OffscreenCanvas !== "undefined") {
+    const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
 
-  const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
+    const DOT_SPACING = 8;
+    const MAX_DOT_SIZE = 5;
+    const TARGET_FPS = 18;
+    const FPS_INTERVAL = 1000 / TARGET_FPS;
 
-  const DOT_SPACING = 8;
-  const MAX_DOT_SIZE = 5;
-  const TARGET_FPS = 18;
-  const FPS_INTERVAL = 1000 / TARGET_FPS;
+    let lastFrameTime = 0;
+    let cols = 0;
+    let rows = 0;
+    let sampleCanvas: OffscreenCanvas;
+    let sampleCtx: OffscreenCanvasRenderingContext2D;
 
-  let lastFrameTime = 0;
-  let cols = 0;
-  let rows = 0;
-  let sampleCanvas: OffscreenCanvas;
-  let sampleCtx: OffscreenCanvasRenderingContext2D;
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.ceil(canvas.width / DOT_SPACING);
+      rows = Math.ceil(canvas.height / DOT_SPACING);
+      sampleCanvas = new OffscreenCanvas(cols, rows);
+      sampleCtx = sampleCanvas.getContext("2d")!;
+    };
 
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    cols = Math.ceil(canvas.width / DOT_SPACING);
-    rows = Math.ceil(canvas.height / DOT_SPACING);
-    sampleCanvas = new OffscreenCanvas(cols, rows);
-    sampleCtx = sampleCanvas.getContext("2d")!;
-  }
+    const drawHalftone = (timestamp: number) => {
+      requestAnimationFrame(drawHalftone);
+      if (timestamp - lastFrameTime < FPS_INTERVAL) return;
+      lastFrameTime = timestamp;
 
-  function drawHalftone(timestamp: number) {
-    requestAnimationFrame(drawHalftone);
-    if (timestamp - lastFrameTime < FPS_INTERVAL) return;
-    lastFrameTime = timestamp;
+      ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // persistence buffer
-    ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+      sampleCtx.drawImage(video, 0, 0, cols, rows);
+      const pixels = sampleCtx.getImageData(0, 0, cols, rows).data;
 
-    // Sample video at low resolution (reuse pre-allocated canvas)
-    sampleCtx.drawImage(video, 0, 0, cols, rows);
-    const pixels = sampleCtx.getImageData(0, 0, cols, rows).data;
+      ctx.fillStyle = "#333333";
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const i = (y * cols + x) * 4;
+          const brightness = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / 765;
+          const size = brightness * MAX_DOT_SIZE;
 
-    // Draw halftone dots as squareS
-    ctx.fillStyle = "#333333";
-    for (let y = 0; y < rows; y++) {
-      for (let x = 0; x < cols; x++) {
-        const i = (y * cols + x) * 4;
-        const brightness = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / 765;
-        const size = brightness * MAX_DOT_SIZE;
-
-        if (size > 0.5) {
-          const half = size * 0.5;
-          ctx.fillRect(
-            x * DOT_SPACING - half,
-            y * DOT_SPACING - half,
-            size,
-            size,
-          );
+          if (size > 0.5) {
+            const half = size * 0.5;
+            ctx.fillRect(
+              x * DOT_SPACING - half,
+              y * DOT_SPACING - half,
+              size,
+              size,
+            );
+          }
         }
       }
+    };
+
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    const startDither = () => {
+      requestAnimationFrame(drawHalftone);
+    };
+
+    if (!video.paused) {
+      startDither();
+    } else {
+      video.addEventListener("playing", startDither, { once: true });
     }
-  }
-
-  resizeCanvas();
-  window.addEventListener("resize", resizeCanvas);
-
-  function startDither() {
-    requestAnimationFrame(drawHalftone);
-  }
-
-  if (!video.paused) {
-    startDither();
   } else {
-    video.addEventListener("playing", startDither, { once: true });
+    console.warn("Dither background disabled: OffscreenCanvas not supported.");
   }
 </script>
