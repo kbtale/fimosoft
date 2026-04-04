@@ -1,5 +1,7 @@
 ---
 import { translations, type Locale } from "../i18n/translations";
+import AppEngine from "../components/ui/AppEngine.astro";
+import CustomCursor from "../components/ui/CustomCursor.astro";
 
 interface Props {
   locale: Locale;
@@ -23,103 +25,11 @@ const t = translations[locale];
       href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap"
       rel="stylesheet"
     />
-    <script is:inline>
-      if ("scrollRestoration" in history) {
-        history.scrollRestoration = "manual";
-      }
-      window.scrollTo(0, 0);
-    </script>
-    <script>
-      import Lenis from "lenis";
-      import { gsap } from "gsap";
-      import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-      gsap.registerPlugin(ScrollTrigger);
-
-      declare global {
-        interface Window {
-          appLenis: Lenis;
-        }
-      }
-      const lenis = new Lenis();
-      window.appLenis = lenis;
-
-      lenis.on("scroll", ScrollTrigger.update);
-
-      gsap.ticker.add((time) => {
-        lenis.raf(time * 1000);
-      });
-      gsap.ticker.lagSmoothing(0);
-
-      // Handle internal links for Lenis
-      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-        anchor.addEventListener("click", function (e) {
-          e.preventDefault();
-          const href = (e.currentTarget as HTMLAnchorElement).getAttribute(
-            "href",
-          );
-          if (href) {
-            const target = document.querySelector(href) as HTMLElement;
-            if (target) {
-              lenis.scrollTo(target, { duration: 2.5 });
-            }
-          }
-        });
-      });
-    </script>
+    <AppEngine />
   </head>
   <body>
     <slot />
-    <div id="custom-cursor">
-      <div class="cursor-inner"></div>
-    </div>
-
-    <script>
-      const cursor = document.getElementById("custom-cursor");
-
-      const updateCursor = (e: MouseEvent) => {
-        if (!cursor) return;
-        cursor.style.display = "block";
-        cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-
-        const targetNode = e.target as HTMLElement;
-        const interactiveTarget = targetNode.closest(
-          'a, button, [role="button"]',
-        ) as HTMLElement | null;
-        const cardTarget = targetNode.closest(".game-card");
-
-        if (interactiveTarget) {
-          const rect = interactiveTarget.getBoundingClientRect();
-          const centerX = rect.left + rect.width / 2;
-          const centerY = rect.top + rect.height / 2;
-          const angle =
-            Math.atan2(centerY - e.clientY, centerX - e.clientX) *
-            (180 / Math.PI);
-          cursor.style.setProperty("--cursor-rotate", `${angle + 90}deg`);
-          cursor.classList.add("cursor-hover");
-        } else {
-          cursor.style.setProperty("--cursor-rotate", "0deg");
-          cursor.classList.remove("cursor-hover");
-        }
-
-        if (cardTarget) {
-          cursor.classList.add("cursor-card-hover");
-        } else {
-          cursor.classList.remove("cursor-card-hover");
-        }
-      };
-
-      window.addEventListener("mousemove", updateCursor);
-      window.addEventListener("mousedown", () =>
-        cursor?.classList.add("cursor-active"),
-      );
-      window.addEventListener("mouseup", () =>
-        cursor?.classList.remove("cursor-active"),
-      );
-      document.addEventListener("mouseleave", () => {
-        if (cursor) cursor.style.display = "none";
-      });
-    </script>
+    <CustomCursor />
   </body>
 </html>
 
@@ -267,91 +177,6 @@ const t = translations[locale];
 
   .lenis.lenis-scrolling iframe {
     pointer-events: none;
-  }
-
-  #custom-cursor {
-    display: none;
-    width: 33px;
-    height: 33px;
-    position: fixed;
-    top: -16.5px;
-    left: -16.5px;
-    pointer-events: none;
-    z-index: 9999;
-    mix-blend-mode: difference;
-    transition: transform 0.15s ease-out;
-  }
-
-  .cursor-inner {
-    width: 100%;
-    height: 100%;
-    background-color: var(--accent-red);
-    rotate: var(--cursor-rotate, 0deg);
-    scale: var(--cursor-scale, 1);
-    /* cirlce */
-    clip-path: polygon(
-      50% 0%,
-      65.5% 2.4%,
-      79.4% 9.5%,
-      90.5% 20.6%,
-      97.6% 34.5%,
-      100% 50%,
-      97.6% 65.5%,
-      90.5% 79.4%,
-      79.4% 90.5%,
-      65.5% 97.6%,
-      50% 100%,
-      34.5% 97.6%,
-      20.6% 90.5%,
-      9.5% 79.4%,
-      2.4% 65.5%,
-      0% 50%,
-      2.4% 34.5%,
-      9.5% 20.6%,
-      20.6% 9.5%,
-      34.5% 2.4%
-    );
-    transition:
-      scale 0.15s ease-out,
-      background-color 0.3s ease,
-      clip-path 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  #custom-cursor.cursor-hover .cursor-inner {
-    background-color: #ffffff;
-    /* Morph to triangle */
-    clip-path: polygon(
-      50% 0%,
-      58.3% 16.7%,
-      66.7% 33.3%,
-      75% 50%,
-      83.3% 66.7%,
-      91.7% 83.3%,
-      100% 100%,
-      83.3% 100%,
-      66.7% 100%,
-      50% 100%,
-      33.3% 100%,
-      16.7% 100%,
-      0% 100%,
-      8.3% 83.3%,
-      16.7% 66.7%,
-      25% 50%,
-      33.3% 33.3%,
-      41.7% 16.7%,
-      50% 0%,
-      50% 0%
-    );
-    --cursor-scale: 1;
-  }
-
-  #custom-cursor.cursor-card-hover .cursor-inner {
-    background-color: #ffffff;
-    --cursor-scale: 1;
-  }
-
-  #custom-cursor.cursor-active .cursor-inner {
-    --cursor-scale: 0.8;
   }
 
   ::selection {
