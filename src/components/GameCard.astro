@@ -49,17 +49,12 @@ const galleryImages = game.screenshots.slice(1);
             ) : (
               <>
                 <img
-                  class="hero-media media-base"
+                  class="hero-media"
                   src={coverImage}
                   alt={game.title}
                   loading="lazy"
                 />
-                <img
-                  class="hero-media media-sketch"
-                  src={coverImage}
-                  alt={game.title}
-                  loading="lazy"
-                />
+                <div class="media-filter-overlay" />
               </>
             )
           }
@@ -337,6 +332,24 @@ const galleryImages = game.screenshots.slice(1);
   document
     .querySelectorAll(".game-card")
     .forEach((card) => initCard(card as HTMLElement));
+
+  const videoObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const videos = entry.target.querySelectorAll("video");
+        if (entry.isIntersecting) {
+          videos.forEach((v) => v.play().catch(() => {}));
+        } else {
+          videos.forEach((v) => v.pause());
+        }
+      });
+    },
+    { rootMargin: "200px" },
+  );
+
+  document
+    .querySelectorAll(".game-card")
+    .forEach((card) => videoObserver.observe(card));
 </script>
 
 <style>
@@ -441,6 +454,33 @@ const galleryImages = game.screenshots.slice(1);
 
   .media-container:hover .media-sketch {
     opacity: 1;
+  }
+
+  .media-filter-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    backdrop-filter: saturate(0.7) brightness(0.5);
+    -webkit-backdrop-filter: saturate(0.7) brightness(0.5);
+    transition:
+      mask-image 0.3s ease,
+      -webkit-mask-image 0.3s ease;
+    pointer-events: none;
+  }
+
+  .media-container:hover .media-filter-overlay {
+    -webkit-mask-image: radial-gradient(
+      circle 150px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      transparent 20%,
+      rgba(0, 0, 0, 0.5) 50%,
+      black 100%
+    );
+    mask-image: radial-gradient(
+      circle 150px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      transparent 20%,
+      rgba(0, 0, 0, 0.5) 50%,
+      black 100%
+    );
   }
 
   .dither-trail {

@@ -31,10 +31,8 @@ const {
   data-rotation-end={rotationEnd}
   data-word-animation-end={wordAnimationEnd}
 >
-  <h2 class="scroll-reveal">
-    <p class={`scroll-reveal-text ${textClassName}`}>
-      <slot />
-    </p>
+  <h2 class={`scroll-reveal scroll-reveal-text ${textClassName}`}>
+    <slot />
   </h2>
 </div>
 
@@ -77,21 +75,38 @@ const {
     const containers = document.querySelectorAll(".scroll-reveal-container");
 
     containers.forEach((container) => {
-      const el = container.querySelector(".scroll-reveal") as HTMLElement;
-      if (!el) return;
-
-      const textEl = el.querySelector(".scroll-reveal-text");
+      const textEl = container.querySelector(
+        ".scroll-reveal-text",
+      ) as HTMLElement;
       if (!textEl) return;
 
-      // Wrap words
-      const text = textEl.textContent || "";
-      const words = text.split(/(\s+)/);
-      textEl.innerHTML = words
-        .map((word) => {
-          if (word.match(/^\s+$/)) return word;
-          return `<span class="word">${word}</span>`;
-        })
-        .join("");
+      const el = textEl;
+
+      function wrapNodes(node: HTMLElement | ChildNode) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const text = node.textContent || "";
+          const words = text.split(/(\s+)/);
+          const fragment = document.createDocumentFragment();
+
+          words.forEach((word) => {
+            if (word.match(/^\s+$/)) {
+              fragment.appendChild(document.createTextNode(word));
+            } else if (word) {
+              const span = document.createElement("span");
+              span.className = "word";
+              span.textContent = word;
+              fragment.appendChild(span);
+            }
+          });
+
+          node.parentNode?.replaceChild(fragment, node);
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          const element = node as HTMLElement;
+          Array.from(element.childNodes).forEach(wrapNodes);
+        }
+      }
+
+      wrapNodes(textEl);
 
       const wordElements = el.querySelectorAll(".word");
       const baseOpacity = parseFloat(

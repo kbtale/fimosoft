@@ -4,75 +4,82 @@ import siteData from "../data/site.json";
 
 const games = gamesData as RawGame[];
 
+export type Locale = "en" | "es";
+
 /**
  * Helper to project raw game data into a locale
+ * Falls back to 'en' if the field is missing in lang
  */
-function getLocalizedGames(lang: 'en' | 'es'): Game[] {
-  return games.map(game => ({
+function getLocalizedGames(lang: Locale): Game[] {
+  const fallback = "en" as const;
+  return games.map((game) => ({
     id: game.id,
     videoUrl: game.videoUrl,
     steamUrl: game.steamUrl,
     screenshots: game.screenshots,
-    title: game.title[lang],
-    genre: game.genre[lang],
-    releaseDate: game.releaseDate[lang],
-    description: game.description[lang],
+    title: game.title[lang] || game.title[fallback],
+    genre: game.genre[lang] || game.genre[fallback],
+    releaseDate: game.releaseDate[lang] || game.releaseDate[fallback],
+    description: game.description[lang] || game.description[fallback],
   }));
 }
 
+const s = siteData;
+const fallback = "en"; // universal fallback key
+
 export const translations = {
   en: {
-    title: siteData.title.en,
-    tagline: siteData.tagline.en,
-    gamesTitle: siteData.gamesTitle.en,
-    heroVideo: siteData.heroVideo,
-    heroIntro: siteData.heroIntro.en,
+    title: s.title.en,
+    tagline: s.tagline.en,
+    gamesTitle: s.gamesTitle.en,
+    heroVideo: s.heroVideo,
+    heroIntro: s.heroIntro.en,
     buttons: {
-      details: siteData.buttons.details.en,
-      steam: siteData.buttons.steam.en
+      details: s.buttons.details.en,
+      steam: s.buttons.steam.en
     },
     nav: {
-      contact: siteData.nav.contact.en,
-      language: siteData.nav.language.en
+      contact: s.nav.contact.en,
+      language: s.nav.language.en
     },
     contact: {
-      title: siteData.contact.title.en,
-      socials: siteData.contact.socials,
+      title: s.contact.title.en,
+      socials: s.contact.socials,
       footer: {
-        logo: siteData.contact.footer.logo,
-        manifesto: siteData.contact.footer.manifesto.en,
-        copyright: siteData.contact.footer.copyright.en,
-        rights: siteData.contact.footer.rights.en
+        logo: s.contact.footer.logo,
+        manifesto: s.contact.footer.manifesto.en,
+        copyright: s.contact.footer.copyright.en,
+        rights: s.contact.footer.rights.en
       }
     },
     games: getLocalizedGames('en')
   },
   es: {
-    title: siteData.title.es,
-    tagline: siteData.tagline.es,
-    gamesTitle: siteData.gamesTitle.es,
-    heroVideo: siteData.heroVideo,
-    heroIntro: siteData.heroIntro.es,
+    title: s.title.es || s.title[fallback],
+    tagline: s.tagline.es || s.tagline[fallback],
+    gamesTitle: s.gamesTitle.es || s.gamesTitle[fallback],
+    heroVideo: s.heroVideo,
+    heroIntro: s.heroIntro.es || s.heroIntro[fallback],
     buttons: {
-      details: siteData.buttons.details.es,
-      steam: siteData.buttons.steam.es
+      details: s.buttons.details.es || s.buttons.details[fallback],
+      steam: s.buttons.steam.es || s.buttons.steam[fallback],
     },
     nav: {
-      contact: siteData.nav.contact.es,
-      language: siteData.nav.language.es
+      contact: s.nav.contact.es || s.nav.contact[fallback],
+      language: s.nav.language.es || s.nav.language[fallback],
     },
     contact: {
-      title: siteData.contact.title.es,
-      socials: siteData.contact.socials,
+      title: s.contact.title.es || s.contact.title[fallback],
+      socials: s.contact.socials,
       footer: {
-        logo: siteData.contact.footer.logo,
-        manifesto: siteData.contact.footer.manifesto.es,
-        copyright: siteData.contact.footer.copyright.es,
-        rights: siteData.contact.footer.rights.es
-      }
+        logo: s.contact.footer.logo,
+        manifesto:
+          s.contact.footer.manifesto.es || s.contact.footer.manifesto[fallback],
+        copyright:
+          s.contact.footer.copyright.es || s.contact.footer.copyright[fallback],
+        rights: s.contact.footer.rights.es || s.contact.footer.rights[fallback],
+      },
     },
-    games: getLocalizedGames('es')
-  }
+    games: getLocalizedGames("es"),
+  },
 };
-
-export type Locale = keyof typeof translations;
