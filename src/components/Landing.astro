@@ -13,7 +13,7 @@ const { locale } = Astro.props;
 const t = translations[locale];
 ---
 
-<Layout>
+<Layout locale={locale}>
   <Navbar locale={locale} />
   <div class="landing-container">
     <!-- bg Video -->
@@ -243,6 +243,7 @@ const t = translations[locale];
     align-items: flex-end;
     padding-bottom: clamp(0.2rem, 0.8vw, 1.5rem);
     gap: clamp(0.8rem, 2.5vw, 3rem);
+    transform: translateY(clamp(0.1rem, 0.5vw, 0.8rem));
   }
 
   .vertical-divider {
@@ -309,11 +310,30 @@ const t = translations[locale];
   let resizeTimer: number | undefined;
   let heroScrollTimeline: gsap.core.Timeline | null = null;
 
+  const restoreScroll = () => {
+    document.body.style.overflow = "";
+    const win = window as AppWindow;
+    if (win.appLenis) win.appLenis.start();
+  };
+
   const clearHeroScrollTimeline = () => {
     if (!heroScrollTimeline) return;
     heroScrollTimeline.scrollTrigger?.kill();
     heroScrollTimeline.kill();
     heroScrollTimeline = null;
+
+    document.querySelectorAll(".letter").forEach((el) => {
+      gsap.set(el, {
+        x: 0,
+        y: 0,
+        rotation: 0,
+        scale: 1,
+        opacity: 1,
+        filter: "blur(0px)",
+        transformOrigin: "50% 50%",
+      });
+    });
+    gsap.set(".tagline-block", { opacity: 1, x: 0, filter: "blur(0px)" });
   };
 
   const buildHeroScrollTimeline = () => {
@@ -322,8 +342,9 @@ const t = translations[locale];
     const allLetters = document.querySelectorAll(
       ".letter",
     ) as NodeListOf<HTMLElement>;
-
     if (allLetters.length === 0) return;
+
+    const rects = Array.from(allLetters).map((l) => l.getBoundingClientRect());
 
     const t = Math.max(0, Math.min(1, (window.innerHeight - 400) / 500));
     const spacing = 16 + t * 19;
@@ -346,29 +367,12 @@ const t = translations[locale];
     let cumulativeY = isMobile ? 16 : 32;
 
     allLetters.forEach((letter, index) => {
-      const rect = letter.getBoundingClientRect();
-
+      const rect = rects[index];
       const targetX = sidebarX - (rect.left + rect.width / 2);
       const targetY = cumulativeY - (rect.top + rect.height / 2);
 
-      scrollTl.to(
-        letter,
-        {
-          x: targetX,
-          ease: "power1.out",
-        },
-        0,
-      );
-
-      scrollTl.to(
-        letter,
-        {
-          y: targetY,
-          ease: "power1.in",
-        },
-        0,
-      );
-
+      scrollTl.to(letter, { x: targetX, ease: "power1.out" }, 0);
+      scrollTl.to(letter, { y: targetY, ease: "power1.in" }, 0);
       scrollTl.to(
         letter,
         {
@@ -385,7 +389,7 @@ const t = translations[locale];
       const nextText = nextLetter?.textContent?.trim();
 
       let gap = sidebarSpacing;
-      const pair = currentText + nextText;
+      const pair = (currentText || "") + (nextText || "");
       if (pair === "IM") {
         gap = sidebarSpacing * 0.9;
       } else if (pair === "MO") {
@@ -412,19 +416,17 @@ const t = translations[locale];
     heroScrollTimeline = scrollTl;
   };
 
-  document.addEventListener("DOMContentLoaded", () => {
-    // Prevent scrolling during animation
-    document.body.style.overflow = "hidden";
+  function initEntranceAnimation() {
     const win = window as AppWindow;
+    document.body.style.overflow = "hidden";
     if (win.appLenis) win.appLenis.stop();
 
     const tl = gsap.timeline({
       defaults: { ease: "power3.out" },
       onComplete: () => {
-        // Restore scrolling once animation finishes
-        document.body.style.overflow = "auto";
-        const win = window as AppWindow;
-        if (win.appLenis) win.appLenis.start();
+        restoreScroll();
+        buildHeroScrollTimeline();
+        ScrollTrigger.refresh();
       },
     });
 
@@ -435,47 +437,24 @@ const t = translations[locale];
       duration: 0.6,
       stagger: 0.06,
     })
-
       .to(
         ".soft .letter",
-        {
-          y: 0,
-          opacity: 1,
-          filter: "blur(0px)",
-          duration: 0.6,
-          stagger: 0.06,
-        },
+        { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.6, stagger: 0.06 },
         "-=0.3",
       )
-
       .to(
         ".vertical-divider",
-        {
-          scaleY: 1,
-          duration: 0.6,
-          ease: "expo.inOut",
-        },
+        { scaleY: 1, duration: 0.6, ease: "expo.inOut" },
         "-=0.3",
       )
-
       .to(
         ".tagline-word",
-        {
-          y: 0,
-          opacity: 1,
-          filter: "blur(0px)",
-          duration: 0.6,
-          stagger: 0.06,
-        },
+        { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.6, stagger: 0.06 },
         "-=0.2",
       );
+  }
 
-    tl.then(() => {
-      buildHeroScrollTimeline();
-      ScrollTrigger.refresh();
-    });
-
-    // Projects Section Reveal
+  function initSectionReveals() {
     gsap.to(".section-title-games", {
       scrollTrigger: {
         trigger: ".section-title-games",
@@ -489,8 +468,8 @@ const t = translations[locale];
       ease: "power4.out",
     });
 
-    const cards = gsap.utils.toArray(".game-card");
-    cards.forEach((card: any, index) => {
+    const cards = gsap.utils.toArray(".game-card") as HTMLElement[];
+    cards.forEach((card, index) => {
       gsap.to(card, {
         scrollTrigger: {
           trigger: card,
@@ -505,25 +484,11 @@ const t = translations[locale];
         delay: index % 2 === 0 ? 0 : 0.1,
       });
     });
+  }
 
-    window.addEventListener("load", () => {
-      ScrollTrigger.refresh();
-    });
-
-    document.addEventListener("click", (e) => {
-      const target = e.target as HTMLElement;
-      const el = target.nodeType === 3 ? target.parentElement : target;
-      if (el?.closest(".is-sidebar .letter") && window.scrollY > 100) {
-        const win = window as AppWindow;
-        if (win.appLenis) {
-          win.appLenis.scrollTo(0, { duration: 2.5 });
-        } else {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-      }
-    });
-
+  function initSidebarBehavior() {
     const logoBlock = document.querySelector(".logo-block");
+
     window.addEventListener("scroll", () => {
       const scrollY = window.scrollY;
       if (scrollY > 50) {
@@ -539,6 +504,21 @@ const t = translations[locale];
       }
     });
 
+    document.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+      const el = target.closest(".is-sidebar .letter");
+      if (el && window.scrollY > 100) {
+        const win = window as AppWindow;
+        if (win.appLenis) {
+          win.appLenis.scrollTo(0, { duration: 2.5 });
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      }
+    });
+  }
+
+  function initResizeHandler() {
     window.addEventListener("resize", () => {
       window.clearTimeout(resizeTimer);
       resizeTimer = window.setTimeout(() => {
@@ -546,6 +526,17 @@ const t = translations[locale];
         ScrollTrigger.refresh();
       }, 150);
     });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    initEntranceAnimation();
+    initSectionReveals();
+    initSidebarBehavior();
+    initResizeHandler();
+  });
+
+  window.addEventListener("load", () => {
+    ScrollTrigger.refresh();
   });
 </script>
 
@@ -553,72 +544,74 @@ const t = translations[locale];
   // Halftone dither renderer for background video
   const video = document.getElementById("bg-video") as HTMLVideoElement;
   const canvas = document.getElementById("dither-canvas") as HTMLCanvasElement;
-  const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
 
-  const DOT_SPACING = 8;
-  const MAX_DOT_SIZE = 5;
-  const TARGET_FPS = 18;
-  const FPS_INTERVAL = 1000 / TARGET_FPS;
+  if (typeof OffscreenCanvas !== "undefined") {
+    const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
 
-  let lastFrameTime = 0;
-  let cols = 0;
-  let rows = 0;
-  let sampleCanvas: OffscreenCanvas;
-  let sampleCtx: OffscreenCanvasRenderingContext2D;
+    const DOT_SPACING = 8;
+    const MAX_DOT_SIZE = 5;
+    const TARGET_FPS = 18;
+    const FPS_INTERVAL = 1000 / TARGET_FPS;
 
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    cols = Math.ceil(canvas.width / DOT_SPACING);
-    rows = Math.ceil(canvas.height / DOT_SPACING);
-    sampleCanvas = new OffscreenCanvas(cols, rows);
-    sampleCtx = sampleCanvas.getContext("2d")!;
-  }
+    let lastFrameTime = 0;
+    let cols = 0;
+    let rows = 0;
+    let sampleCanvas: OffscreenCanvas;
+    let sampleCtx: OffscreenCanvasRenderingContext2D;
 
-  function drawHalftone(timestamp: number) {
-    requestAnimationFrame(drawHalftone);
-    if (timestamp - lastFrameTime < FPS_INTERVAL) return;
-    lastFrameTime = timestamp;
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.ceil(canvas.width / DOT_SPACING);
+      rows = Math.ceil(canvas.height / DOT_SPACING);
+      sampleCanvas = new OffscreenCanvas(cols, rows);
+      sampleCtx = sampleCanvas.getContext("2d")!;
+    };
 
-    // persistence buffer
-    ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const drawHalftone = (timestamp: number) => {
+      requestAnimationFrame(drawHalftone);
+      if (timestamp - lastFrameTime < FPS_INTERVAL) return;
+      lastFrameTime = timestamp;
 
-    // Sample video at low resolution (reuse pre-allocated canvas)
-    sampleCtx.drawImage(video, 0, 0, cols, rows);
-    const pixels = sampleCtx.getImageData(0, 0, cols, rows).data;
+      ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw halftone dots as squareS
-    ctx.fillStyle = "#333333";
-    for (let y = 0; y < rows; y++) {
-      for (let x = 0; x < cols; x++) {
-        const i = (y * cols + x) * 4;
-        const brightness = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / 765;
-        const size = brightness * MAX_DOT_SIZE;
+      sampleCtx.drawImage(video, 0, 0, cols, rows);
+      const pixels = sampleCtx.getImageData(0, 0, cols, rows).data;
 
-        if (size > 0.5) {
-          const half = size * 0.5;
-          ctx.fillRect(
-            x * DOT_SPACING - half,
-            y * DOT_SPACING - half,
-            size,
-            size,
-          );
+      ctx.fillStyle = "#333333";
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const i = (y * cols + x) * 4;
+          const brightness = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / 765;
+          const size = brightness * MAX_DOT_SIZE;
+
+          if (size > 0.5) {
+            const half = size * 0.5;
+            ctx.fillRect(
+              x * DOT_SPACING - half,
+              y * DOT_SPACING - half,
+              size,
+              size,
+            );
+          }
         }
       }
+    };
+
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    const startDither = () => {
+      requestAnimationFrame(drawHalftone);
+    };
+
+    if (!video.paused) {
+      startDither();
+    } else {
+      video.addEventListener("playing", startDither, { once: true });
     }
-  }
-
-  resizeCanvas();
-  window.addEventListener("resize", resizeCanvas);
-
-  function startDither() {
-    requestAnimationFrame(drawHalftone);
-  }
-
-  if (!video.paused) {
-    startDither();
   } else {
-    video.addEventListener("playing", startDither, { once: true });
+    console.warn("Dither background disabled: OffscreenCanvas not supported.");
   }
 </script>
