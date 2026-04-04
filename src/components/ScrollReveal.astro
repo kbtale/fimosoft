@@ -31,10 +31,8 @@ const {
   data-rotation-end={rotationEnd}
   data-word-animation-end={wordAnimationEnd}
 >
-  <h2 class="scroll-reveal">
-    <p class={`scroll-reveal-text ${textClassName}`}>
-      <slot />
-    </p>
+  <h2 class={`scroll-reveal scroll-reveal-text ${textClassName}`}>
+    <slot />
   </h2>
 </div>
 
@@ -77,11 +75,12 @@ const {
     const containers = document.querySelectorAll(".scroll-reveal-container");
 
     containers.forEach((container) => {
-      const el = container.querySelector(".scroll-reveal") as HTMLElement;
-      if (!el) return;
-
-      const textEl = el.querySelector(".scroll-reveal-text");
+      const textEl = container.querySelector(
+        ".scroll-reveal-text",
+      ) as HTMLElement;
       if (!textEl) return;
+
+      const el = textEl;
 
       // Wrap words
       const text = textEl.textContent || "";
