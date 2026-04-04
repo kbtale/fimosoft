@@ -486,10 +486,9 @@ const t = translations[locale];
     });
   }
 
-  function initSidebarBehavior() {
-    const logoBlock = document.querySelector(".logo-block");
-
-    window.addEventListener("scroll", () => {
+  const handlers = {
+    onScroll: () => {
+      const logoBlock = document.querySelector(".logo-block");
       const scrollY = window.scrollY;
       if (scrollY > 50) {
         logoBlock?.classList.add("is-scrolled");
@@ -502,9 +501,8 @@ const t = translations[locale];
       } else {
         logoBlock?.classList.remove("is-sidebar");
       }
-    });
-
-    document.addEventListener("click", (e) => {
+    },
+    onClick: (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const el = target.closest(".is-sidebar .letter");
       if (el && window.scrollY > 100) {
@@ -515,29 +513,38 @@ const t = translations[locale];
           window.scrollTo({ top: 0, behavior: "smooth" });
         }
       }
-    });
-  }
-
-  function initResizeHandler() {
-    window.addEventListener("resize", () => {
+    },
+    onResize: () => {
       window.clearTimeout(resizeTimer);
       resizeTimer = window.setTimeout(() => {
         buildHeroScrollTimeline();
         ScrollTrigger.refresh();
       }, 150);
-    });
+    },
+  };
+
+  function initSidebarBehavior() {
+    window.addEventListener("scroll", handlers.onScroll);
+    document.addEventListener("click", handlers.onClick);
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
+  function initResizeHandler() {
+    window.addEventListener("resize", handlers.onResize);
+  }
+
+  const onDOMContentLoaded = () => {
     initEntranceAnimation();
     initSectionReveals();
     initSidebarBehavior();
     initResizeHandler();
-  });
+  };
 
-  window.addEventListener("load", () => {
+  const onWindowLoad = () => {
     ScrollTrigger.refresh();
-  });
+  };
+
+  document.addEventListener("DOMContentLoaded", onDOMContentLoaded);
+  window.addEventListener("load", onWindowLoad);
 </script>
 
 <script>
@@ -600,7 +607,8 @@ const t = translations[locale];
     };
 
     resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
+    const onVideoResize = () => resizeCanvas();
+    window.addEventListener("resize", onVideoResize);
 
     const startDither = () => {
       requestAnimationFrame(drawHalftone);

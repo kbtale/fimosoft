@@ -8,7 +8,8 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = translations[locale];
-const emailLabel = "fimosoftgames@outlook.com";
+const emailLink = t.contact.socials.email;
+const emailLabel = emailLink.replace("mailto:", "");
 ---
 
 <section id="contact" class="contact-section">

@@ -178,5 +178,6 @@ const {
     });
   }
 
-  document.addEventListener("DOMContentLoaded", initScrollReveal);
+  const onDOMContentLoaded = () => initScrollReveal();
+  document.addEventListener("DOMContentLoaded", onDOMContentLoaded);
 </script>

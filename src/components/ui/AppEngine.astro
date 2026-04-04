@@ -20,24 +20,27 @@
   const lenis = new Lenis();
   window.appLenis = lenis;
 
-  lenis.on("scroll", ScrollTrigger.update);
-
-  gsap.ticker.add((time) => {
-    lenis.raf(time * 1000);
-  });
-  gsap.ticker.lagSmoothing(0);
-
-  // Handle internal links for Lenis
-  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener("click", function (e) {
+  const handlers = {
+    onScrollUpdate: () => ScrollTrigger.update(),
+    onTickerUpdate: (time: number) => lenis.raf(time * 1000),
+    onAnchorClick: function (this: HTMLAnchorElement, e: MouseEvent) {
       e.preventDefault();
-      const href = (e.currentTarget as HTMLAnchorElement).getAttribute("href");
+      const href = this.getAttribute("href");
       if (href) {
         const target = document.querySelector(href) as HTMLElement;
         if (target) {
           lenis.scrollTo(target, { duration: 2.5 });
         }
       }
-    });
+    },
+  };
+
+  lenis.on("scroll", handlers.onScrollUpdate);
+  gsap.ticker.add(handlers.onTickerUpdate);
+  gsap.ticker.lagSmoothing(0);
+
+  // Handle internal links for Lenis
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener("click", handlers.onAnchorClick as EventListener);
   });
 </script>
