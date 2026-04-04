@@ -80,14 +80,6 @@ const t = translations[locale];
       <div class="cursor-inner"></div>
     </div>
 
-    <script is:inline>
-      if (window.location.pathname === "/" || window.location.pathname === "") {
-        const lang = navigator.language.toLowerCase();
-        if (lang.startsWith("es")) {
-          window.location.replace("/es/");
-        }
-      }
-    </script>
     <script>
       const cursor = document.getElementById("custom-cursor");
 
