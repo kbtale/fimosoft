@@ -544,6 +544,12 @@ const t = translations[locale];
   // Halftone dither renderer for background video
   const video = document.getElementById("bg-video") as HTMLVideoElement;
   const canvas = document.getElementById("dither-canvas") as HTMLCanvasElement;
+
+  if (typeof OffscreenCanvas === "undefined") {
+    console.warn("Dither background disabled: OffscreenCanvas not supported.");
+    return;
+  }
+
   const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
 
   const DOT_SPACING = 8;
