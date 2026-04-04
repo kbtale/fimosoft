@@ -8,7 +8,7 @@ export type Locale = "en" | "es";
 
 /**
  * Helper to project raw game data into a locale
- * Falls back to 'en' if the field is missing in lang
+ * Falls back to "en" if the field is missing in lang
  */
 function getLocalizedGames(lang: Locale): Game[] {
   const fallback = "en" as const;
@@ -52,7 +52,7 @@ export const translations = {
         rights: s.contact.footer.rights.en
       }
     },
-    games: getLocalizedGames('en')
+    games: getLocalizedGames("en")
   },
   es: {
     title: s.title.es || s.title[fallback],
