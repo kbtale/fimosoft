@@ -13,7 +13,7 @@ const { locale } = Astro.props;
 const t = translations[locale];
 ---
 
-<Layout>
+<Layout locale={locale}>
   <Navbar locale={locale} />
   <div class="landing-container">
     <!-- bg Video -->
