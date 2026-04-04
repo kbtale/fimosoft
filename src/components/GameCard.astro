@@ -27,7 +27,7 @@ const galleryImages = game.screenshots.slice(1);
             hasVideo ? (
               <>
                 <video
-                  class="hero-media media-base"
+                  class="hero-media"
                   autoplay
                   muted
                   loop
@@ -36,15 +36,7 @@ const galleryImages = game.screenshots.slice(1);
                 >
                   <source src={game.videoUrl} type="video/mp4" />
                 </video>
-                <video
-                  class="hero-media media-sketch"
-                  autoplay
-                  muted
-                  loop
-                  playsinline
-                >
-                  <source src={game.videoUrl} type="video/mp4" />
-                </video>
+                <div class="media-filter-overlay" />
               </>
             ) : (
               <>
@@ -134,7 +126,6 @@ const galleryImages = game.screenshots.slice(1);
     card.dataset.initialized = "true";
 
     const btn = card.querySelector(".view-toggle-btn");
-    const btnText = card.querySelector(".btn-text");
     const mediaContainer = card.querySelector(
       ".media-container",
     ) as HTMLElement;
@@ -422,38 +413,6 @@ const galleryImages = game.screenshots.slice(1);
       opacity 0.4s ease,
       filter 0.4s ease,
       transform 0.4s ease;
-  }
-
-  .media-base {
-    z-index: 1;
-    filter: saturate(0.7) brightness(0.5);
-    transform: scale(1);
-  }
-
-  .media-sketch {
-    z-index: 2;
-    opacity: 0;
-    filter: saturate(1.1) brightness(1.2);
-    transform: scale(1);
-
-    /* Lantern Effect Mask */
-    -webkit-mask-image: radial-gradient(
-      circle 150px at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      black 20%,
-      rgba(0, 0, 0, 0.5) 50%,
-      transparent 100%
-    );
-    mask-image: radial-gradient(
-      circle 150px at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      black 20%,
-      rgba(0, 0, 0, 0.5) 50%,
-      transparent 100%
-    );
-    will-change: mask-image;
-  }
-
-  .media-container:hover .media-sketch {
-    opacity: 1;
   }
 
   .media-filter-overlay {
