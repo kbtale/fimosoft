@@ -51,12 +51,6 @@ const t = translations[locale];
       });
       gsap.ticker.lagSmoothing(0);
 
-      function raf(time: number) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
-      }
-      requestAnimationFrame(raf);
-
       // Handle internal links for Lenis
       document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
         anchor.addEventListener("click", function (e) {
