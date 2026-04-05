@@ -1,5 +1,19 @@
 ---
-import Landing from '../components/Landing.astro';
+import Landing from "../components/Landing.astro";
 ---
+
+<script is:inline>
+  // language detection and redirection for the root domain
+  (function () {
+    const supportedLocales = ["es", "ru", "jp"];
+    const userLang = navigator.language.split("-")[0];
+
+    // check if the user has already expressed a preference
+    // or if it should just follow the browser's
+    if (supportedLocales.includes(userLang)) {
+      window.location.pathname = "/" + userLang + "/";
+    }
+  })();
+</script>
 
 <Landing locale="en" />
