@@ -1,10 +1,10 @@
 <div align="center">
 
-# FimoSoft Landing
+# FimoSoft
 
-**Immersive landing page for FimoSoft Games.**
+**Landing page for FimoSoft Games.**
 
-www.fimosoftgames.com
+[Access the website here](https://www.fimosoftgames.com)
 
 Created with [Astro 6](https://astro.build/) and [GSAP](https://gsap.com/).
 
@@ -13,7 +13,7 @@ Created with [Astro 6](https://astro.build/) and [GSAP](https://gsap.com/).
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 
-
+https://github.com/user-attachments/assets/4ead9ab5-3ebf-4fc1-8205-d2ff631b453a
 
 </div>
 
