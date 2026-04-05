@@ -5,9 +5,12 @@
 <script>
   const cursor = document.getElementById("custom-cursor");
 
+  // Disable cursor on touch devices
+  const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+
   const handlers = {
     onMouseMove: (e: MouseEvent) => {
-      if (!cursor) return;
+      if (!cursor || isTouchDevice) return;
       cursor.style.display = "block";
       cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
 
@@ -37,14 +40,19 @@
         cursor.classList.remove("cursor-card-hover");
       }
     },
-    onMouseDown: () => cursor?.classList.add("cursor-active"),
-    onMouseUp: () => cursor?.classList.remove("cursor-active"),
+    onMouseDown: () => {
+      if (!isTouchDevice) cursor?.classList.add("cursor-active");
+    },
+    onMouseUp: () => {
+      if (!isTouchDevice) cursor?.classList.remove("cursor-active");
+    },
     onMouseLeave: () => {
       if (cursor) cursor.style.display = "none";
     },
   };
 
   function setupCursor() {
+    if (isTouchDevice) return;
     window.addEventListener("mousemove", handlers.onMouseMove);
     window.addEventListener("mousedown", handlers.onMouseDown);
     window.addEventListener("mouseup", handlers.onMouseUp);
