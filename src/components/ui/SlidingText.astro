@@ -11,3 +11,51 @@
     <span class="btn-text-secondary" aria-hidden="true"><slot /></span>
   </div>
 </div>
+
+<style is:global>
+  .btn-sliding-text {
+    overflow: visible;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+  }
+
+  /* expanded hitbox */
+  .btn-sliding-text::before {
+    content: "";
+    position: absolute;
+    top: -25px;
+    left: -25px;
+    right: -25px;
+    bottom: -25px;
+    z-index: 1;
+  }
+
+  .sliding-text-crop {
+    height: 1.5rem;
+    overflow: hidden;
+  }
+
+  .btn-text-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .btn-sliding-text:hover .btn-text-wrapper {
+    transform: translateY(-1.5rem);
+  }
+
+  .btn-text-primary,
+  .btn-text-secondary {
+    display: block;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    white-space: nowrap;
+  }
+
+  .btn-text-secondary {
+    color: var(--text-accent-red);
+  }
+</style>
