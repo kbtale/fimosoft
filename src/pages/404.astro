@@ -1,0 +1,512 @@
+---
+import siteData from "../data/site.json";
+import gamesData from "../data/games.json";
+import SlidingText from "../components/ui/SlidingText.astro";
+import CustomCursor from "../components/ui/CustomCursor.astro";
+
+const notFound = siteData.notFound;
+const goBackText = notFound.goBack.en;
+
+const allScreenshots: { src: string; cam: number }[] = [];
+let camNumber = 4870;
+for (const game of gamesData) {
+  for (const screenshot of game.screenshots) {
+    allScreenshots.push({ src: screenshot, cam: camNumber });
+    camNumber += Math.floor(Math.random() * 200) + 100;
+  }
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <title>404 | Fimosoft</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="camera-feed">
+      {
+        allScreenshots.map((shot, i) => (
+          <img
+            class:list={["feed-image", i === 0 && "active"]}
+            src={shot.src}
+            alt=""
+            data-cam={shot.cam}
+          />
+        ))
+      }
+
+      <div class="color-overlay"></div>
+
+      <div class="scanlines"></div>
+
+      <div class="static-noise"></div>
+
+      <div class="glitch-flash"></div>
+
+      <div class="crt-bar"></div>
+
+      <div class="vignette"></div>
+
+      <div class="bracket bracket-tl"></div>
+      <div class="bracket bracket-tr"></div>
+      <div class="bracket bracket-bl"></div>
+      <div class="bracket bracket-br"></div>
+
+      <div class="hud-top">
+        <span class="hud-error">{notFound.title}</span>
+        <span class="hud-camera" id="cam-label">
+          SECURITY CAM {allScreenshots[0]?.cam}
+        </span>
+      </div>
+
+      <a href="/" class="go-back btn-sliding-text">
+        <SlidingText>{goBackText}</SlidingText>
+      </a>
+
+      <div class="hud-bottom">
+        <span class="rec-indicator">
+          <span class="rec-dot"></span>
+          REC
+        </span>
+        <span class="timestamp" id="cam-timestamp">00:00:00:00</span>
+      </div>
+    </div>
+
+    <script>
+      const images = document.querySelectorAll<HTMLImageElement>(".feed-image");
+      const camLabel = document.getElementById("cam-label");
+      const glitchFlash = document.querySelector<HTMLElement>(".glitch-flash");
+      let current = 0;
+
+      const switchCamera = () => {
+        if (images.length <= 1) return;
+
+        const next = (current + 1) % images.length;
+
+        if (glitchFlash) {
+          glitchFlash.classList.add("flash");
+          setTimeout(() => glitchFlash.classList.remove("flash"), 250);
+        }
+
+        setTimeout(() => {
+          images[current].classList.remove("active");
+          images[next].classList.add("active");
+
+          if (camLabel) {
+            const cam = images[next].dataset.cam;
+            camLabel.textContent = "SECURITY CAM " + cam;
+          }
+
+          current = next;
+        }, 120);
+      };
+
+      setInterval(switchCamera, 6000);
+
+      const ts = document.getElementById("cam-timestamp");
+      if (ts) {
+        const start = Date.now();
+        const update = () => {
+          const elapsed = Math.floor((Date.now() - start) / 10);
+          const cs = elapsed % 100;
+          const totalSec = Math.floor(elapsed / 100);
+          const s = totalSec % 60;
+          const m = Math.floor(totalSec / 60) % 60;
+          const h = Math.floor(totalSec / 3600);
+          ts.textContent =
+            String(h).padStart(2, "0") +
+            ":" +
+            String(m).padStart(2, "0") +
+            ":" +
+            String(s).padStart(2, "0") +
+            ":" +
+            String(cs).padStart(2, "0");
+          requestAnimationFrame(update);
+        };
+        update();
+      }
+
+      const goBackLink = document.querySelector(".go-back");
+      const goBackPrimary = document.querySelector(".go-back .btn-text-primary");
+      const goBackSecondary = document.querySelector(".go-back .btn-text-secondary");
+      if (goBackLink) {
+        const goBackMap: Record<string, string> = {
+          en: "GO BACK HOME",
+          es: "VOLVER AL INICIO",
+          ru: "ВЕРНУТЬСЯ ДОМОЙ",
+          jp: "ホームに戻る",
+        };
+        const path = window.location.pathname;
+        const match = path.match(/^\/(es|ru|jp)\//);
+        if (match && goBackMap[match[1]]) {
+          if (goBackPrimary) goBackPrimary.textContent = goBackMap[match[1]];
+          if (goBackSecondary) goBackSecondary.textContent = goBackMap[match[1]];
+          goBackLink.setAttribute("href", "/" + match[1] + "/");
+          document.documentElement.lang = match[1];
+        }
+      }
+    </script>
+    <CustomCursor />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --accent-red: #7f1d1d;
+    --text-accent-red: #dc2626;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    cursor: none;
+  }
+
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .camera-feed {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: "Cinzel Decorative", cursive;
+  }
+
+  .feed-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) brightness(0.65) contrast(1.15);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .feed-image.active {
+    opacity: 1;
+  }
+
+  .color-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.2);
+    mix-blend-mode: multiply;
+    z-index: 2;
+  }
+
+  .scanlines {
+    position: absolute;
+    inset: 0;
+    height: 200%;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 3px,
+      rgba(0, 0, 0, 0.2) 5px,
+      rgba(0, 0, 0, 0.3) 8px,
+      rgba(0, 0, 0, 0.2) 11px,
+      transparent 13px,
+      transparent 16px
+    );
+    filter: blur(0.5px);
+    pointer-events: none;
+    z-index: 3;
+    animation: scanScroll 14s linear infinite;
+  }
+
+  @keyframes scanScroll {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-50%);
+    }
+  }
+
+  .static-noise {
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 512px 512px;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 4;
+    animation: staticShift 0.08s steps(4) infinite;
+  }
+
+  @keyframes staticShift {
+    0% {
+      transform: translate(0, 0);
+    }
+    33% {
+      transform: translate(-10px, -15px);
+    }
+    66% {
+      transform: translate(5px, 10px);
+    }
+    100% {
+      transform: translate(-5px, 5px);
+    }
+  }
+
+  .crt-bar {
+    position: absolute;
+    left: -20%;
+    width: 140%;
+    height: 35%;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(255, 255, 255, 0.07) 0%,
+      rgba(255, 255, 255, 0.03) 40%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 4;
+    animation: crtRoll 10s ease-in-out infinite;
+    filter: blur(30px);
+    border-radius: 50%;
+  }
+
+  @keyframes crtRoll {
+    0% {
+      top: 110%;
+    }
+    100% {
+      top: -20%;
+    }
+  }
+
+  .glitch-flash {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    pointer-events: none;
+    opacity: 0;
+    background: #fff;
+    mix-blend-mode: overlay;
+  }
+
+  .glitch-flash.flash {
+    animation: glitchPulse 0.25s steps(4) forwards;
+  }
+
+  @keyframes glitchPulse {
+    0% {
+      opacity: 0.8;
+      background: #fff;
+    }
+    25% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 0.5;
+      background: #000;
+    }
+    75% {
+      opacity: 0.2;
+      background: #fff;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 50%,
+      rgba(0, 0, 0, 0.7) 100%
+    );
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .bracket {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-color: rgba(255, 255, 255, 0.5);
+    border-style: solid;
+    z-index: 10;
+  }
+
+  .bracket-tl {
+    top: 24px;
+    left: 24px;
+    border-width: 2px 0 0 2px;
+  }
+
+  .bracket-tr {
+    top: 24px;
+    right: 24px;
+    border-width: 2px 2px 0 0;
+  }
+
+  .bracket-bl {
+    bottom: 24px;
+    left: 24px;
+    border-width: 0 0 2px 2px;
+  }
+
+  .bracket-br {
+    bottom: 24px;
+    right: 24px;
+    border-width: 0 2px 2px 0;
+  }
+
+  .hud-top {
+    position: absolute;
+    top: 36px;
+    left: 44px;
+    right: 44px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 10;
+  }
+
+  .hud-error {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: clamp(0.7rem, 1.5vw, 1rem);
+    letter-spacing: 0.25em;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  }
+
+  .hud-camera {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: clamp(0.6rem, 1.2vw, 0.85rem);
+    letter-spacing: 0.2em;
+    font-weight: 400;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+  }
+
+  .go-back {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    color: #fff;
+    font-family: "Cinzel Decorative", cursive;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .hud-bottom {
+    position: absolute;
+    bottom: 36px;
+    left: 44px;
+    right: 44px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    z-index: 10;
+  }
+
+  .rec-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: clamp(0.65rem, 1.2vw, 0.85rem);
+    letter-spacing: 0.2em;
+    font-weight: 700;
+  }
+
+  .rec-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #dc2626;
+    box-shadow:
+      0 0 6px #dc2626,
+      0 0 12px rgba(220, 38, 38, 0.5);
+    animation: blink 1.2s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.2;
+    }
+  }
+
+  .timestamp {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: clamp(0.65rem, 1.2vw, 0.85rem);
+    letter-spacing: 0.15em;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+  }
+
+  @media (max-width: 600px) {
+    .bracket {
+      width: 24px;
+      height: 24px;
+    }
+
+    .bracket-tl {
+      top: 12px;
+      left: 12px;
+    }
+    .bracket-tr {
+      top: 12px;
+      right: 12px;
+    }
+    .bracket-bl {
+      bottom: 12px;
+      left: 12px;
+    }
+    .bracket-br {
+      bottom: 12px;
+      right: 12px;
+    }
+
+    .hud-top {
+      top: 20px;
+      left: 24px;
+      right: 24px;
+    }
+    .hud-bottom {
+      bottom: 20px;
+      left: 24px;
+      right: 24px;
+    }
+
+    .go-back {
+      font-size: 0.8rem;
+    }
+  }
+</style>

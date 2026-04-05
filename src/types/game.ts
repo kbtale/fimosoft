@@ -35,3 +35,39 @@ export interface Game {
   steamUrl?: string;
   screenshots: string[];
 }
+
+export interface Translation {
+  title: string;
+  description: string;
+  siteUrl: string;
+  siteLogo: string;
+  tagline: string[];
+  gamesTitle: string;
+  heroVideo: string;
+  heroIntro: string[];
+  buttons: {
+    details: string;
+    steam: string;
+  };
+  nav: {
+    contact: string;
+    language: string;
+  };
+  contact: {
+    title: string;
+    socials: {
+      x: string;
+      instagram: string;
+      tiktok: string;
+      youtube: string;
+      email: string;
+    };
+    footer: {
+      logo: string;
+      manifesto: string;
+      copyright: string;
+      rights: string;
+    };
+  };
+  games: Game[];
+}
