@@ -1,4 +1,12 @@
 {
+  "siteUrl": "https://fimosoftgames.com",
+  "siteLogo": "/FimosoftTransparentLogo.png",
+  "description": {
+    "en": "FimoSoft is an indie game developer from Spain specializing in psychological terror and indie horror. Discover our chilling game titles and the latest in indie dev.",
+    "es": "FimoSoft es un desarrollador indie español experto en terror psicológico y juegos de horror. Explora nuestro desarrollo indie y vive nuestras experiencias escalofriantes.",
+    "ru": "FimoSoft — испанский инди-разработчик инди-хорроров и психологических триллеров. Откройте для себя наши жуткие игры и последние новости инди-дева прямо сейчас.",
+    "jp": "FimoSoft（フィモソフト）はスペインのインディーゲーム開発者で、インディーホラーや心理テラーを専門としています。最新のインディー開発と背筋も凍るようなゲームを今すぐご覧ください。"
+  },
   "heroVideo": "/videos/hero-bg.mp4",
   "notFound": {
     "backgroundImage": "/images/games/hpc2.jpg",

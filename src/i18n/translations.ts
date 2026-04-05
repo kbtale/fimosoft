@@ -1,4 +1,4 @@
-import type { Game, RawGame, Locale } from "../types/game";
+import type { Game, RawGame, Locale, Translation } from "../types/game";
 import gamesData from "../data/games.json";
 import siteData from "../data/site.json";
 
@@ -25,7 +25,7 @@ function getLocalizedGames(lang: Locale): Game[] {
 const s = siteData;
 const fallback = "en"; // universal fallback key
 
-export const translations: Record<Locale, any> = {
+export const translations: Record<Locale, Translation> = {
   en: {
     title: s.title.en,
     tagline: s.tagline.en,
@@ -50,10 +50,16 @@ export const translations: Record<Locale, any> = {
         rights: s.contact.footer.rights.en,
       },
     },
+    description: s.description.en,
+    siteUrl: s.siteUrl,
+    siteLogo: s.siteLogo,
     games: getLocalizedGames("en"),
   },
   es: {
     title: s.title.es || s.title[fallback],
+    description: s.description.es || s.description[fallback],
+    siteUrl: s.siteUrl,
+    siteLogo: s.siteLogo,
     tagline: s.tagline.es || s.tagline[fallback],
     gamesTitle: s.gamesTitle.es || s.gamesTitle[fallback],
     heroVideo: s.heroVideo,
@@ -80,6 +86,9 @@ export const translations: Record<Locale, any> = {
   },
   ru: {
     title: s.title.ru || s.title[fallback],
+    description: s.description.ru || s.description[fallback],
+    siteUrl: s.siteUrl,
+    siteLogo: s.siteLogo,
     tagline: s.tagline.ru || s.tagline[fallback],
     gamesTitle: s.gamesTitle.ru || s.gamesTitle[fallback],
     heroVideo: s.heroVideo,
@@ -106,6 +115,9 @@ export const translations: Record<Locale, any> = {
   },
   jp: {
     title: s.title.jp || s.title[fallback],
+    description: s.description.jp || s.description[fallback],
+    siteUrl: s.siteUrl,
+    siteLogo: s.siteLogo,
     tagline: s.tagline.jp || s.tagline[fallback],
     gamesTitle: s.gamesTitle.jp || s.gamesTitle[fallback],
     heroVideo: s.heroVideo,

@@ -1,6 +1,6 @@
 ---
 import { translations } from "../i18n/translations";
-import type { Locale } from "../types/game";
+import type { Locale, Game } from "../types/game";
 import AppEngine from "../components/ui/AppEngine.astro";
 import CustomCursor from "../components/ui/CustomCursor.astro";
 
@@ -17,9 +17,80 @@ const t = translations[locale];
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href={t.siteLogo} />
     <meta name="generator" content={Astro.generator} />
     <title>{t.title}</title>
+    <meta name="description" content={t.description} />
+    <link rel="canonical" href={new URL(Astro.url.pathname, t.siteUrl)} />
+
+    <!-- i18n hreflang -->
+    <link rel="alternate" hreflang="en" href={new URL("/", t.siteUrl)} />
+    <link rel="alternate" hreflang="es" href={new URL("/es/", t.siteUrl)} />
+    <link rel="alternate" hreflang="ru" href={new URL("/ru/", t.siteUrl)} />
+    <link rel="alternate" hreflang="ja" href={new URL("/jp/", t.siteUrl)} />
+    <link rel="alternate" hreflang="x-default" href={new URL("/", t.siteUrl)} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={new URL(Astro.url.pathname, t.siteUrl)} />
+    <meta property="og:title" content={t.title} />
+    <meta property="og:description" content={t.description} />
+    <meta property="og:image" content={new URL(t.siteLogo, t.siteUrl)} />
+    <meta property="og:locale" content={locale === "jp" ? "ja_JP" : locale === "es" ? "es_ES" : locale === "ru" ? "ru_RU" : "en_US"} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={new URL(Astro.url.pathname, t.siteUrl)} />
+    <meta property="twitter:title" content={t.title} />
+    <meta property="twitter:description" content={t.description} />
+    <meta property="twitter:image" content={new URL(t.siteLogo, t.siteUrl)} />
+
+    <!-- AEO / Structured Data (JSON-LD) -->
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": `${t.siteUrl}/#organization`,
+          "name": "FimoSoft",
+          "url": t.siteUrl,
+          "logo": {
+            "@type": "ImageObject",
+            "url": `${t.siteUrl}/favicon.ico`
+          },
+          "sameAs": [
+            t.contact.socials.x,
+            t.contact.socials.instagram,
+            t.contact.socials.tiktok,
+            t.contact.socials.youtube
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": `${t.siteUrl}/#website`,
+          "url": t.siteUrl,
+          "name": "FimoSoft",
+          "publisher": { "@id": `${t.siteUrl}/#organization` },
+          "inLanguage": locale
+        },
+        {
+          "@type": "ItemList",
+          "name": t.gamesTitle,
+          "itemListElement": t.games.map((game: Game, i: number) => ({
+            "@type": "ListItem",
+            "position": i + 1,
+            "item": {
+              "@type": "VideoGame",
+              "name": game.title,
+              "description": game.description,
+              "genre": game.genre,
+              "url": game.steamUrl,
+              "author": { "@id": `${t.siteUrl}/#organization` }
+            }
+          }))
+        }
+      ]
+    })} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
