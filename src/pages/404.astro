@@ -1,0 +1,367 @@
+---
+import siteData from "../data/site.json";
+
+const notFound = siteData.notFound;
+const bgImage = notFound.backgroundImage;
+const goBackText = notFound.goBack.en;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <title>404 | Fimosoft</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="camera-feed">
+      <!-- background image -->
+      <img class="feed-image" src={bgImage} alt="" />
+
+      <!-- dark desaturation overlay -->
+      <div class="color-overlay"></div>
+
+      <!-- scan lines effect -->
+      <div class="scanlines"></div>
+
+      <!-- static noise overlay -->
+      <div class="static-noise"></div>
+
+      <!-- vignette edges -->
+      <div class="vignette"></div>
+
+      <!-- viewfinder corner brackets -->
+      <div class="bracket bracket-tl"></div>
+      <div class="bracket bracket-tr"></div>
+      <div class="bracket bracket-bl"></div>
+      <div class="bracket bracket-br"></div>
+
+      <!-- hud top bar -->
+      <div class="hud-top">
+        <span class="hud-error">{notFound.title}</span>
+        <span class="hud-camera">{notFound.camera}</span>
+      </div>
+
+      <!-- center message -->
+      <a href="/" class="go-back">{goBackText}</a>
+
+      <!-- hud bottom bar -->
+      <div class="hud-bottom">
+        <span class="rec-indicator">
+          <span class="rec-dot"></span>
+          REC
+        </span>
+        <span class="timestamp" id="cam-timestamp">00:00:00:00</span>
+      </div>
+    </div>
+
+    <!-- timestamp counter and glitch logic -->
+    <script>
+      const ts = document.getElementById("cam-timestamp");
+      if (ts) {
+        const start = Date.now();
+        const update = () => {
+          const elapsed = Math.floor((Date.now() - start) / 10);
+          const cs = elapsed % 100;
+          const totalSec = Math.floor(elapsed / 100);
+          const s = totalSec % 60;
+          const m = Math.floor(totalSec / 60) % 60;
+          const h = Math.floor(totalSec / 3600);
+          ts.textContent =
+            String(h).padStart(2, "0") + ":" +
+            String(m).padStart(2, "0") + ":" +
+            String(s).padStart(2, "0") + ":" +
+            String(cs).padStart(2, "0");
+          requestAnimationFrame(update);
+        }
+        update();
+      }
+
+      // locale-aware go back text
+      const goBackEl = document.querySelector(".go-back");
+      if (goBackEl) {
+        const goBackMap: Record<string, string> = {
+          en: document.body.dataset.gobackEn || "GO BACK HOME",
+          es: document.body.dataset.gobackEs || "VOLVER AL INICIO",
+          ru: document.body.dataset.gobackRu || "ВЕРНУТЬСЯ ДОМОЙ",
+          jp: document.body.dataset.gobackJp || "ホームに戻る",
+        };
+        const path = window.location.pathname;
+        const match = path.match(/^\/(es|ru|jp)\//);
+        if (match && goBackMap[match[1]]) {
+          goBackEl.textContent = goBackMap[match[1]];
+          goBackEl.setAttribute("href", "/" + match[1] + "/");
+          document.documentElement.lang = match[1];
+        }
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  /* fullscreen camera feed container */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    cursor: crosshair;
+  }
+
+  .camera-feed {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: "Cinzel Decorative", cursive;
+  }
+
+  /* background image - desaturated and darkened */
+  .feed-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.75) brightness(0.65) contrast(1.15);
+  }
+
+  /* dark tint overlay */
+  .color-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.2);
+    mix-blend-mode: multiply;
+  }
+
+  /* horizontal scan lines - animated */
+  .scanlines {
+    position: absolute;
+    inset: 0;
+    height: 200%;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 3px,
+      rgba(0, 0, 0, 0.35) 3px,
+      rgba(0, 0, 0, 0.35) 6px
+    );
+    pointer-events: none;
+    z-index: 3;
+    animation: scanScroll 8s linear infinite;
+  }
+
+  @keyframes scanScroll {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+  }
+
+  /* static noise effect */
+  .static-noise {
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background-image:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+    opacity: 0.06;
+    pointer-events: none;
+    z-index: 4;
+    animation: staticShift 0.1s steps(3) infinite;
+  }
+
+  @keyframes staticShift {
+    0% { transform: translate(0, 0); }
+    33% { transform: translate(-10px, -15px); }
+    66% { transform: translate(5px, 10px); }
+    100% { transform: translate(-5px, 5px); }
+  }
+
+  /* vignette darkening at the edges */
+  .vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 50%,
+      rgba(0, 0, 0, 0.7) 100%
+    );
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* viewfinder corner brackets */
+  .bracket {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-color: rgba(255, 255, 255, 0.5);
+    border-style: solid;
+    z-index: 10;
+  }
+
+  .bracket-tl {
+    top: 24px;
+    left: 24px;
+    border-width: 2px 0 0 2px;
+  }
+
+  .bracket-tr {
+    top: 24px;
+    right: 24px;
+    border-width: 2px 2px 0 0;
+  }
+
+  .bracket-bl {
+    bottom: 24px;
+    left: 24px;
+    border-width: 0 0 2px 2px;
+  }
+
+  .bracket-br {
+    bottom: 24px;
+    right: 24px;
+    border-width: 0 2px 2px 0;
+  }
+
+  /* hud text elements */
+  .hud-top {
+    position: absolute;
+    top: 36px;
+    left: 44px;
+    right: 44px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 10;
+  }
+
+  .hud-error {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: clamp(0.7rem, 1.5vw, 1rem);
+    letter-spacing: 0.25em;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  }
+
+  .hud-camera {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: clamp(0.6rem, 1.2vw, 0.85rem);
+    letter-spacing: 0.2em;
+    font-weight: 400;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+  }
+
+  /* centered go-back link */
+  .go-back {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: clamp(1.2rem, 3vw, 2.2rem);
+    letter-spacing: 0.35em;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-shadow:
+      0 0 20px rgba(255, 255, 255, 0.3),
+      0 0 40px rgba(255, 255, 255, 0.1);
+    transition: all 0.4s ease;
+    padding: 1rem 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .go-back:hover {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.5);
+    text-shadow:
+      0 0 30px rgba(255, 255, 255, 0.5),
+      0 0 60px rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  /* bottom hud bar */
+  .hud-bottom {
+    position: absolute;
+    bottom: 36px;
+    left: 44px;
+    right: 44px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    z-index: 10;
+  }
+
+  .rec-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: clamp(0.65rem, 1.2vw, 0.85rem);
+    letter-spacing: 0.2em;
+    font-weight: 700;
+  }
+
+  .rec-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #dc2626;
+    box-shadow: 0 0 6px #dc2626, 0 0 12px rgba(220, 38, 38, 0.5);
+    animation: blink 1.2s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  .timestamp {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: clamp(0.65rem, 1.2vw, 0.85rem);
+    letter-spacing: 0.15em;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+  }
+
+  /* mobile adjustments */
+  @media (max-width: 600px) {
+    .bracket {
+      width: 24px;
+      height: 24px;
+    }
+
+    .bracket-tl { top: 12px; left: 12px; }
+    .bracket-tr { top: 12px; right: 12px; }
+    .bracket-bl { bottom: 12px; left: 12px; }
+    .bracket-br { bottom: 12px; right: 12px; }
+
+    .hud-top { top: 20px; left: 24px; right: 24px; }
+    .hud-bottom { bottom: 20px; left: 24px; right: 24px; }
+
+    .go-back {
+      padding: 0.8rem 1.2rem;
+      letter-spacing: 0.2em;
+    }
+  }
+</style>

@@ -1,5 +1,16 @@
 {
   "heroVideo": "/videos/hero-bg.mp4",
+  "notFound": {
+    "backgroundImage": "/images/games/hpc2.jpg",
+    "title": "ERROR - 404",
+    "camera": "SECURITY CAM 4870",
+    "goBack": {
+      "en": "GO BACK HOME",
+      "es": "VOLVER AL INICIO",
+      "ru": "ВЕРНУТЬСЯ ДОМОЙ",
+      "jp": "ホームに戻る"
+    }
+  },
   "title": {
     "en": "Fimosoft | Where nightmares take shape",
     "es": "Fimosoft | Donde las pesadillas toman forma",
