@@ -10,7 +10,7 @@ interface Props {
 const { locale } = Astro.props;
 const t = translations[locale];
 
-const locales: Locale[] = ["en", "es", "ru", "ja"];
+const locales: Locale[] = ["en", "es", "ru", "jp"];
 const currentIndex = locales.indexOf(locale);
 const nextLocale = locales[(currentIndex + 1) % locales.length];
 

@@ -4,7 +4,7 @@
     "en": "Fimosoft | Where nightmares take shape",
     "es": "Fimosoft | Donde las pesadillas toman forma",
     "ru": "Fimosoft | Где кошмары обретают плоть",
-    "ja": "Fimosoft | 悪夢が形を成す場所"
+    "jp": "Fimosoft | 悪夢が形を成す場所"
   },
   "tagline": {
     "en": [
@@ -22,7 +22,7 @@
       "Кошмары",
       "Обретают плоть"
     ],
-    "ja": [
+    "jp": [
       "悪夢が",
       "形を成す",
       "場所"
@@ -32,20 +32,20 @@
     "en": "Our Games",
     "es": "Nuestros Juegos",
     "ru": "Наши игры",
-    "ja": "ゲーム一覧"
+    "jp": "ゲーム一覧"
   },
   "nav": {
     "contact": {
       "en": "Contact Us",
       "es": "Contacto",
       "ru": "Контакты",
-      "ja": "お問い合わせ"
+      "jp": "お問い合わせ"
     },
     "language": {
       "en": "EN",
       "es": "ES",
       "ru": "RU",
-      "ja": "JA"
+      "jp": "JA"
     }
   },
   "heroIntro": {
@@ -61,7 +61,7 @@
       "Мы работаем в тени, чтобы показать вам нечто жуткое...",
       "Тьма хранит тайны, время которых еще не пришло."
     ],
-    "ja": [
+    "jp": [
       "我々は影に潜み、背筋の凍るような何かを創り出している...",
       "闇は、まだ明かされていない秘密を隠している。"
     ]
@@ -71,13 +71,13 @@
       "en": "Details",
       "es": "Detalles",
       "ru": "Подробнее",
-      "ja": "詳細"
+      "jp": "詳細"
     },
     "steam": {
       "en": "View on Steam",
       "es": "Ver en Steam",
       "ru": "Открыть в Steam",
-      "ja": "Steamで見る"
+      "jp": "Steamで見る"
     }
   },
   "contact": {
@@ -85,7 +85,7 @@
       "en": "Contact Us",
       "es": "Contáctanos",
       "ru": "Связаться с нами",
-      "ja": "お問い合わせ"
+      "jp": "お問い合わせ"
     },
     "socials": {
       "x": "https://x.com/fimosoftgames",
@@ -100,19 +100,19 @@
         "en": "WHERE NIGHTMARES TAKE SHAPE",
         "es": "DONDE LAS PESADILLAS TOMAN FORMA",
         "ru": "ГДЕ КОШМАРЫ ОБРЕТАЮТ ПЛОТЬ",
-        "ja": "悪夢が形を成す場所"
+        "jp": "悪夢が形を成す場所"
       },
       "copyright": {
         "en": "© 2026 FIMOSOFT",
         "es": "© 2026 FIMOSOFT",
         "ru": "© 2026 FIMOSOFT",
-        "ja": "© 2026 FIMOSOFT"
+        "jp": "© 2026 FIMOSOFT"
       },
       "rights": {
         "en": "ALL NIGHTMARES RESERVED",
         "es": "TODOS LOS SUSTOS RESERVADOS",
         "ru": "ВСЕ КОШМАРЫ ЗАЩИЩЕНЫ",
-        "ja": "すべての悪夢を保有しています"
+        "jp": "すべての悪夢を保有しています"
       }
     }
   }
