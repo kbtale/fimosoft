@@ -1,7 +1,8 @@
 ---
 import type { Game } from "../types/game";
 import SlidingText from "./ui/SlidingText.astro";
-import { translations, type Locale } from "../i18n/translations";
+import { translations } from "../i18n/translations";
+import type { Locale } from "../types/game";
 
 interface Props {
   game: Game;
@@ -23,6 +24,7 @@ const galleryImages = game.screenshots.slice(1);
     <div class="main-content">
       <div class="media-container">
         <div class="media-layers">
+          <!-- game cover -->
           {
             hasVideo ? (
               <>
@@ -39,6 +41,7 @@ const galleryImages = game.screenshots.slice(1);
                 <div class="media-filter-overlay" />
               </>
             ) : (
+              <!-- supporting cover image -->
               <>
                 <img
                   class="hero-media"
@@ -72,6 +75,7 @@ const galleryImages = game.screenshots.slice(1);
       </div>
     </div>
 
+    <!-- expanded game details -->
     <div class="details-panel">
       <div class="details-content">
         <div class="genres">
@@ -116,6 +120,7 @@ const galleryImages = game.screenshots.slice(1);
 </article>
 
 <script>
+  // card interaction logic gsap
   import { gsap } from "gsap";
   import type Lenis from "lenis";
 
@@ -344,6 +349,7 @@ const galleryImages = game.screenshots.slice(1);
 </script>
 
 <style>
+  /* game card design */
   .game-card {
     width: 100%;
     position: relative;

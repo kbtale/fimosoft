@@ -1,10 +1,8 @@
-import type { Game, RawGame } from "../types/game";
+import type { Game, RawGame, Locale } from "../types/game";
 import gamesData from "../data/games.json";
 import siteData from "../data/site.json";
 
 const games = gamesData as RawGame[];
-
-export type Locale = "en" | "es";
 
 /**
  * Helper to project raw game data into a locale
@@ -27,7 +25,7 @@ function getLocalizedGames(lang: Locale): Game[] {
 const s = siteData;
 const fallback = "en"; // universal fallback key
 
-export const translations = {
+export const translations: Record<Locale, any> = {
   en: {
     title: s.title.en,
     tagline: s.tagline.en,
@@ -36,11 +34,11 @@ export const translations = {
     heroIntro: s.heroIntro.en,
     buttons: {
       details: s.buttons.details.en,
-      steam: s.buttons.steam.en
+      steam: s.buttons.steam.en,
     },
     nav: {
       contact: s.nav.contact.en,
-      language: s.nav.language.en
+      language: s.nav.language.en,
     },
     contact: {
       title: s.contact.title.en,
@@ -49,10 +47,10 @@ export const translations = {
         logo: s.contact.footer.logo,
         manifesto: s.contact.footer.manifesto.en,
         copyright: s.contact.footer.copyright.en,
-        rights: s.contact.footer.rights.en
-      }
+        rights: s.contact.footer.rights.en,
+      },
     },
-    games: getLocalizedGames("en")
+    games: getLocalizedGames("en"),
   },
   es: {
     title: s.title.es || s.title[fallback],
@@ -73,13 +71,63 @@ export const translations = {
       socials: s.contact.socials,
       footer: {
         logo: s.contact.footer.logo,
-        manifesto:
-          s.contact.footer.manifesto.es || s.contact.footer.manifesto[fallback],
-        copyright:
-          s.contact.footer.copyright.es || s.contact.footer.copyright[fallback],
+        manifesto: s.contact.footer.manifesto.es || s.contact.footer.manifesto[fallback],
+        copyright: s.contact.footer.copyright.es || s.contact.footer.copyright[fallback],
         rights: s.contact.footer.rights.es || s.contact.footer.rights[fallback],
       },
     },
     games: getLocalizedGames("es"),
+  },
+  ru: {
+    title: s.title.ru || s.title[fallback],
+    tagline: s.tagline.ru || s.tagline[fallback],
+    gamesTitle: s.gamesTitle.ru || s.gamesTitle[fallback],
+    heroVideo: s.heroVideo,
+    heroIntro: s.heroIntro.ru || s.heroIntro[fallback],
+    buttons: {
+      details: s.buttons.details.ru || s.buttons.details[fallback],
+      steam: s.buttons.steam.ru || s.buttons.steam[fallback],
+    },
+    nav: {
+      contact: s.nav.contact.ru || s.nav.contact[fallback],
+      language: s.nav.language.ru || s.nav.language[fallback],
+    },
+    contact: {
+      title: s.contact.title.ru || s.contact.title[fallback],
+      socials: s.contact.socials,
+      footer: {
+        logo: s.contact.footer.logo,
+        manifesto: s.contact.footer.manifesto.ru || s.contact.footer.manifesto[fallback],
+        copyright: s.contact.footer.copyright.ru || s.contact.footer.copyright[fallback],
+        rights: s.contact.footer.rights.ru || s.contact.footer.rights[fallback],
+      },
+    },
+    games: getLocalizedGames("ru"),
+  },
+  jp: {
+    title: s.title.jp || s.title[fallback],
+    tagline: s.tagline.jp || s.tagline[fallback],
+    gamesTitle: s.gamesTitle.jp || s.gamesTitle[fallback],
+    heroVideo: s.heroVideo,
+    heroIntro: s.heroIntro.jp || s.heroIntro[fallback],
+    buttons: {
+      details: s.buttons.details.jp || s.buttons.details[fallback],
+      steam: s.buttons.steam.jp || s.buttons.steam[fallback],
+    },
+    nav: {
+      contact: s.nav.contact.jp || s.nav.contact[fallback],
+      language: s.nav.language.jp || s.nav.language[fallback],
+    },
+    contact: {
+      title: s.contact.title.jp || s.contact.title[fallback],
+      socials: s.contact.socials,
+      footer: {
+        logo: s.contact.footer.logo,
+        manifesto: s.contact.footer.manifesto.jp || s.contact.footer.manifesto[fallback],
+        copyright: s.contact.footer.copyright.jp || s.contact.footer.copyright[fallback],
+        rights: s.contact.footer.rights.jp || s.contact.footer.rights[fallback],
+      },
+    },
+    games: getLocalizedGames("jp"),
   },
 };

@@ -1,7 +1,11 @@
 
+export type Locale = "en" | "es" | "ru" | "jp";
+
 export interface LocalizedField {
   en: string;
   es: string;
+  ru: string;
+  jp: string;
 }
 
 /**

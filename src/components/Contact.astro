@@ -1,5 +1,6 @@
 ---
-import { translations, type Locale } from "../i18n/translations";
+import { translations } from "../i18n/translations";
+import type { Locale } from "../types/game";
 import SlidingText from "./ui/SlidingText.astro";
 
 interface Props {
@@ -17,6 +18,7 @@ const emailLabel = emailLink.replace("mailto:", "");
     <div class="contact-content">
       <h3 class="projects-title section-title">{t.contact.title}</h3>
 
+<!-- social links -->
       <div class="social-links">
         <a
           href={t.contact.socials.x}
@@ -177,6 +179,7 @@ const emailLabel = emailLink.replace("mailto:", "");
       </div>
     </div>
 
+    <!-- footer -->
     <footer class="footer-block">
       <div class="footer-separator animate-footer">
         <div class="line left"></div>
@@ -197,6 +200,7 @@ const emailLabel = emailLink.replace("mailto:", "");
 </section>
 
 <style>
+  /* contact and footer styles */
   .contact-section {
     padding: 15vh 5vw 10vh 5vw;
     display: flex;
@@ -412,6 +416,7 @@ const emailLabel = emailLink.replace("mailto:", "");
 </style>
 
 <script>
+  // contact section animations
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
 
