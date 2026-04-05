@@ -205,7 +205,6 @@ const t = translations[locale];
     font-size: clamp(4.5rem, 14vw, 17rem);
     line-height: 0.8;
     width: clamp(16rem, 50vw, 65rem);
-    filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
     pointer-events: auto;
   }
 
@@ -228,7 +227,6 @@ const t = translations[locale];
     display: inline-block;
     opacity: 0;
     transform: translateY(50px);
-    filter: blur(10px);
     pointer-events: auto;
     padding: 0.5rem;
     margin: -0.5rem;
@@ -274,7 +272,6 @@ const t = translations[locale];
     display: inline-block;
     opacity: 0;
     transform: translateY(20px);
-    filter: blur(10px);
   }
 
   /* Projects Section Placeholder */
@@ -426,6 +423,9 @@ const t = translations[locale];
     document.body.style.overflow = "hidden";
     if (win.appLenis) win.appLenis.stop();
 
+    gsap.set(".letter", { filter: "blur(10px)" });
+    gsap.set(".tagline-word", { filter: "blur(5px)" });
+
     const tl = gsap.timeline({
       defaults: { ease: "power3.out" },
       onComplete: () => {
@@ -441,10 +441,18 @@ const t = translations[locale];
       filter: "blur(0px)",
       duration: 0.6,
       stagger: 0.06,
+      clearProps: "filter",
     })
       .to(
         ".soft .letter",
-        { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.6, stagger: 0.06 },
+        {
+          y: 0,
+          opacity: 1,
+          filter: "blur(0px)",
+          duration: 0.6,
+          stagger: 0.06,
+          clearProps: "filter",
+        },
         "-=0.3",
       )
       .to(
@@ -454,7 +462,14 @@ const t = translations[locale];
       )
       .to(
         ".tagline-word",
-        { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.6, stagger: 0.06 },
+        {
+          y: 0,
+          opacity: 1,
+          filter: "blur(0px)",
+          duration: 0.6,
+          stagger: 0.06,
+          clearProps: "filter",
+        },
         "-=0.2",
       );
   }
