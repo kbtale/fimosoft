@@ -1,5 +1,6 @@
 ---
-import { translations, type Locale } from "../i18n/translations";
+import { translations } from "../i18n/translations";
+import type { Locale } from "../types/game";
 import AppEngine from "../components/ui/AppEngine.astro";
 import CustomCursor from "../components/ui/CustomCursor.astro";
 
@@ -10,6 +11,7 @@ interface Props {
 const { locale } = Astro.props;
 const t = translations[locale];
 ---
+
 <!doctype html>
 <html lang={locale}>
   <head>
@@ -34,6 +36,7 @@ const t = translations[locale];
 </html>
 
 <style is:global>
+  /* base styles and scrollbar */
   html,
   body,
   * {
@@ -98,7 +101,7 @@ const t = translations[locale];
     }
   }
 
-  /* Sliding Text */
+  /* sliding text component styles */
   .btn-sliding-text {
     overflow: visible;
     display: inline-block;

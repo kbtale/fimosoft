@@ -2,24 +2,50 @@
   "heroVideo": "/videos/hero-bg.mp4",
   "title": {
     "en": "Fimosoft | Where nightmares take shape",
-    "es": "Fimosoft | Donde las pesadillas toman forma"
+    "es": "Fimosoft | Donde las pesadillas toman forma",
+    "ru": "Fimosoft | Где кошмары обретают плоть",
+    "ja": "Fimosoft | 悪夢が形を成す場所"
   },
   "tagline": {
-    "en": ["Where", "Nightmares", "Take shape"],
-    "es": ["Donde", "Las pesadillas", "Toman forma"]
+    "en": [
+      "Where",
+      "Nightmares",
+      "Take shape"
+    ],
+    "es": [
+      "Donde",
+      "Las pesadillas",
+      "Toman forma"
+    ],
+    "ru": [
+      "Где",
+      "Кошмары",
+      "Обретают плоть"
+    ],
+    "ja": [
+      "悪夢が",
+      "形を成す",
+      "場所"
+    ]
   },
   "gamesTitle": {
     "en": "Our Games",
-    "es": "Nuestros Juegos"
+    "es": "Nuestros Juegos",
+    "ru": "Наши игры",
+    "ja": "ゲーム一覧"
   },
   "nav": {
     "contact": {
       "en": "Contact Us",
-      "es": "Contacto"
+      "es": "Contacto",
+      "ru": "Контакты",
+      "ja": "お問い合わせ"
     },
     "language": {
-      "en": "ES",
-      "es": "EN"
+      "en": "EN",
+      "es": "ES",
+      "ru": "RU",
+      "ja": "JA"
     }
   },
   "heroIntro": {
@@ -28,24 +54,38 @@
       "The darkness hides secrets yet to be unveiled."
     ],
     "es": [
-      "Estamos trabajando en las sombras para traerte algo escalofriante...",
+      "Estamos trabajando en las sombras para entregarte algo escalofriante...",
       "La oscuridad oculta secretos que aún están por revelarse."
+    ],
+    "ru": [
+      "Мы работаем в тени, чтобы показать вам нечто жуткое...",
+      "Тьма хранит тайны, время которых еще не пришло."
+    ],
+    "ja": [
+      "我々は影に潜み、背筋の凍るような何かを創り出している...",
+      "闇は、まだ明かされていない秘密を隠している。"
     ]
   },
   "buttons": {
     "details": {
       "en": "Details",
-      "es": "Detalles"
+      "es": "Detalles",
+      "ru": "Подробнее",
+      "ja": "詳細"
     },
     "steam": {
       "en": "View on Steam",
-      "es": "Ver en Steam"
+      "es": "Ver en Steam",
+      "ru": "Открыть в Steam",
+      "ja": "Steamで見る"
     }
   },
   "contact": {
     "title": {
       "en": "Contact Us",
-      "es": "Contáctanos"
+      "es": "Contáctanos",
+      "ru": "Связаться с нами",
+      "ja": "お問い合わせ"
     },
     "socials": {
       "x": "https://x.com/fimosoftgames",
@@ -58,15 +98,21 @@
       "logo": "FIMOSOFT",
       "manifesto": {
         "en": "WHERE NIGHTMARES TAKE SHAPE",
-        "es": "DONDE LAS PESADILLAS TOMAN FORMA"
+        "es": "DONDE LAS PESADILLAS TOMAN FORMA",
+        "ru": "ГДЕ КОШМАРЫ ОБРЕТАЮТ ПЛОТЬ",
+        "ja": "悪夢が形を成す場所"
       },
       "copyright": {
         "en": "© 2026 FIMOSOFT",
-        "es": "© 2026 FIMOSOFT"
+        "es": "© 2026 FIMOSOFT",
+        "ru": "© 2026 FIMOSOFT",
+        "ja": "© 2026 FIMOSOFT"
       },
       "rights": {
         "en": "ALL NIGHTMARES RESERVED",
-        "es": "TODOS LOS SUSTOS RESERVADOS"
+        "es": "TODOS LOS SUSTOS RESERVADOS",
+        "ru": "ВСЕ КОШМАРЫ ЗАЩИЩЕНЫ",
+        "ja": "すべての悪夢を保有しています"
       }
     }
   }

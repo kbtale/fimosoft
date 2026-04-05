@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { translations, type Locale } from "../i18n/translations";
+import { translations } from "../i18n/translations";
+import type { Locale } from "../types/game";
 import ScrollReveal from "./ScrollReveal.astro";
 import GameCard from "./GameCard.astro";
 import Navbar from "./Navbar.astro";
@@ -16,7 +17,7 @@ const t = translations[locale];
 <Layout locale={locale}>
   <Navbar locale={locale} />
   <div class="landing-container">
-    <!-- bg Video -->
+    <!-- background video -->
     <div class="video-background">
       <video
         id="bg-video"
@@ -78,6 +79,7 @@ const t = translations[locale];
     </main>
 
     <!-- Scroll Content -->
+    <!-- intro text -->
     <div class="scrolling-content">
       <ScrollReveal
         baseOpacity={0.1}
@@ -90,6 +92,7 @@ const t = translations[locale];
         {t.heroIntro[1]}
       </ScrollReveal>
 
+      <!-- games section -->
       <section class="projects-placeholder">
         <h3 class="projects-title section-title-games">{t.gamesTitle}</h3>
         <div class="project-cards-grid">
@@ -103,6 +106,7 @@ const t = translations[locale];
 </Layout>
 
 <style>
+  /* Global Styles */
   .landing-container {
     position: relative;
     overflow-x: hidden;
@@ -299,6 +303,7 @@ const t = translations[locale];
 </style>
 
 <script>
+  // main page animations
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import type Lenis from "lenis";
@@ -548,6 +553,7 @@ const t = translations[locale];
 </script>
 
 <script>
+  // background video visual effect
   // Halftone dither renderer for background video
   const video = document.getElementById("bg-video") as HTMLVideoElement;
   const canvas = document.getElementById("dither-canvas") as HTMLCanvasElement;
