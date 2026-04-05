@@ -1,9 +1,18 @@
 ---
 import siteData from "../data/site.json";
+import gamesData from "../data/games.json";
 
 const notFound = siteData.notFound;
-const bgImage = notFound.backgroundImage;
 const goBackText = notFound.goBack.en;
+
+const allScreenshots: { src: string; cam: number }[] = [];
+let camNumber = 4870;
+for (const game of gamesData) {
+  for (const screenshot of game.screenshots) {
+    allScreenshots.push({ src: screenshot, cam: camNumber });
+    camNumber += Math.floor(Math.random() * 200) + 100;
+  }
+}
 ---
 
 <!doctype html>
@@ -22,37 +31,39 @@ const goBackText = notFound.goBack.en;
   </head>
   <body>
     <div class="camera-feed">
-      <!-- background image -->
-      <img class="feed-image" src={bgImage} alt="" />
+      {allScreenshots.map((shot, i) => (
+        <img
+          class:list={["feed-image", i === 0 && "active"]}
+          src={shot.src}
+          alt=""
+          data-cam={shot.cam}
+        />
+      ))}
 
-      <!-- dark desaturation overlay -->
       <div class="color-overlay"></div>
 
-      <!-- scan lines effect -->
       <div class="scanlines"></div>
 
-      <!-- static noise overlay -->
       <div class="static-noise"></div>
 
-      <!-- vignette edges -->
+      <div class="glitch-flash"></div>
+
       <div class="vignette"></div>
 
-      <!-- viewfinder corner brackets -->
       <div class="bracket bracket-tl"></div>
       <div class="bracket bracket-tr"></div>
       <div class="bracket bracket-bl"></div>
       <div class="bracket bracket-br"></div>
 
-      <!-- hud top bar -->
       <div class="hud-top">
         <span class="hud-error">{notFound.title}</span>
-        <span class="hud-camera">{notFound.camera}</span>
+        <span class="hud-camera" id="cam-label">
+          SECURITY CAM {allScreenshots[0]?.cam}
+        </span>
       </div>
 
-      <!-- center message -->
       <a href="/" class="go-back">{goBackText}</a>
 
-      <!-- hud bottom bar -->
       <div class="hud-bottom">
         <span class="rec-indicator">
           <span class="rec-dot"></span>
@@ -62,8 +73,37 @@ const goBackText = notFound.goBack.en;
       </div>
     </div>
 
-    <!-- timestamp counter and glitch logic -->
     <script>
+      const images = document.querySelectorAll<HTMLImageElement>(".feed-image");
+      const camLabel = document.getElementById("cam-label");
+      const glitchFlash = document.querySelector<HTMLElement>(".glitch-flash");
+      let current = 0;
+
+      const switchCamera = () => {
+        if (images.length <= 1) return;
+
+        const next = (current + 1) % images.length;
+
+        if (glitchFlash) {
+          glitchFlash.classList.add("flash");
+          setTimeout(() => glitchFlash.classList.remove("flash"), 250);
+        }
+
+        setTimeout(() => {
+          images[current].classList.remove("active");
+          images[next].classList.add("active");
+
+          if (camLabel) {
+            const cam = images[next].dataset.cam;
+            camLabel.textContent = "SECURITY CAM " + cam;
+          }
+
+          current = next;
+        }, 120);
+      };
+
+      setInterval(switchCamera, 6000);
+
       const ts = document.getElementById("cam-timestamp");
       if (ts) {
         const start = Date.now();
@@ -75,23 +115,25 @@ const goBackText = notFound.goBack.en;
           const m = Math.floor(totalSec / 60) % 60;
           const h = Math.floor(totalSec / 3600);
           ts.textContent =
-            String(h).padStart(2, "0") + ":" +
-            String(m).padStart(2, "0") + ":" +
-            String(s).padStart(2, "0") + ":" +
+            String(h).padStart(2, "0") +
+            ":" +
+            String(m).padStart(2, "0") +
+            ":" +
+            String(s).padStart(2, "0") +
+            ":" +
             String(cs).padStart(2, "0");
           requestAnimationFrame(update);
-        }
+        };
         update();
       }
 
-      // locale-aware go back text
       const goBackEl = document.querySelector(".go-back");
       if (goBackEl) {
         const goBackMap: Record<string, string> = {
-          en: document.body.dataset.gobackEn || "GO BACK HOME",
-          es: document.body.dataset.gobackEs || "VOLVER AL INICIO",
-          ru: document.body.dataset.gobackRu || "ВЕРНУТЬСЯ ДОМОЙ",
-          jp: document.body.dataset.gobackJp || "ホームに戻る",
+          en: "GO BACK HOME",
+          es: "VOLVER AL INICIO",
+          ru: "ВЕРНУТЬСЯ ДОМОЙ",
+          jp: "ホームに戻る",
         };
         const path = window.location.pathname;
         const match = path.match(/^\/(es|ru|jp)\//);
@@ -106,7 +148,6 @@ const goBackText = notFound.goBack.en;
 </html>
 
 <style>
-  /* fullscreen camera feed container */
   *,
   *::before,
   *::after {
@@ -115,7 +156,8 @@ const goBackText = notFound.goBack.en;
     padding: 0;
   }
 
-  html, body {
+  html,
+  body {
     height: 100%;
     overflow: hidden;
     background: #000;
@@ -131,7 +173,6 @@ const goBackText = notFound.goBack.en;
     font-family: "Cinzel Decorative", cursive;
   }
 
-  /* background image - desaturated and darkened */
   .feed-image {
     position: absolute;
     inset: 0;
@@ -139,17 +180,22 @@ const goBackText = notFound.goBack.en;
     height: 100%;
     object-fit: cover;
     filter: grayscale(0.75) brightness(0.65) contrast(1.15);
+    opacity: 0;
+    transition: opacity 0.15s ease;
   }
 
-  /* dark tint overlay */
+  .feed-image.active {
+    opacity: 1;
+  }
+
   .color-overlay {
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.2);
     mix-blend-mode: multiply;
+    z-index: 2;
   }
 
-  /* horizontal scan lines - animated */
   .scanlines {
     position: absolute;
     inset: 0;
@@ -157,28 +203,30 @@ const goBackText = notFound.goBack.en;
     background: repeating-linear-gradient(
       to bottom,
       transparent 0px,
-      transparent 3px,
-      rgba(0, 0, 0, 0.35) 3px,
-      rgba(0, 0, 0, 0.35) 6px
+      transparent 4px,
+      rgba(0, 0, 0, 0.4) 4px,
+      rgba(0, 0, 0, 0.4) 8px
     );
     pointer-events: none;
     z-index: 3;
-    animation: scanScroll 8s linear infinite;
+    animation: scanScroll 6s linear infinite;
   }
 
   @keyframes scanScroll {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-50%); }
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-50%);
+    }
   }
 
-  /* static noise effect */
   .static-noise {
     position: absolute;
     inset: -50%;
     width: 200%;
     height: 200%;
-    background-image:
-      url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
     background-size: 256px 256px;
     opacity: 0.06;
     pointer-events: none;
@@ -187,13 +235,55 @@ const goBackText = notFound.goBack.en;
   }
 
   @keyframes staticShift {
-    0% { transform: translate(0, 0); }
-    33% { transform: translate(-10px, -15px); }
-    66% { transform: translate(5px, 10px); }
-    100% { transform: translate(-5px, 5px); }
+    0% {
+      transform: translate(0, 0);
+    }
+    33% {
+      transform: translate(-10px, -15px);
+    }
+    66% {
+      transform: translate(5px, 10px);
+    }
+    100% {
+      transform: translate(-5px, 5px);
+    }
   }
 
-  /* vignette darkening at the edges */
+  .glitch-flash {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    pointer-events: none;
+    opacity: 0;
+    background: #fff;
+    mix-blend-mode: overlay;
+  }
+
+  .glitch-flash.flash {
+    animation: glitchPulse 0.25s steps(4) forwards;
+  }
+
+  @keyframes glitchPulse {
+    0% {
+      opacity: 0.8;
+      background: #fff;
+    }
+    25% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 0.5;
+      background: #000;
+    }
+    75% {
+      opacity: 0.2;
+      background: #fff;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
   .vignette {
     position: absolute;
     inset: 0;
@@ -206,7 +296,6 @@ const goBackText = notFound.goBack.en;
     z-index: 5;
   }
 
-  /* viewfinder corner brackets */
   .bracket {
     position: absolute;
     width: 40px;
@@ -240,7 +329,6 @@ const goBackText = notFound.goBack.en;
     border-width: 0 2px 2px 0;
   }
 
-  /* hud text elements */
   .hud-top {
     position: absolute;
     top: 36px;
@@ -269,7 +357,6 @@ const goBackText = notFound.goBack.en;
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
   }
 
-  /* centered go-back link */
   .go-back {
     position: absolute;
     top: 50%;
@@ -299,7 +386,6 @@ const goBackText = notFound.goBack.en;
     background: rgba(255, 255, 255, 0.03);
   }
 
-  /* bottom hud bar */
   .hud-bottom {
     position: absolute;
     bottom: 36px;
@@ -326,13 +412,20 @@ const goBackText = notFound.goBack.en;
     height: 8px;
     border-radius: 50%;
     background: #dc2626;
-    box-shadow: 0 0 6px #dc2626, 0 0 12px rgba(220, 38, 38, 0.5);
+    box-shadow:
+      0 0 6px #dc2626,
+      0 0 12px rgba(220, 38, 38, 0.5);
     animation: blink 1.2s ease-in-out infinite;
   }
 
   @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.2; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.2;
+    }
   }
 
   .timestamp {
@@ -344,20 +437,39 @@ const goBackText = notFound.goBack.en;
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
   }
 
-  /* mobile adjustments */
   @media (max-width: 600px) {
     .bracket {
       width: 24px;
       height: 24px;
     }
 
-    .bracket-tl { top: 12px; left: 12px; }
-    .bracket-tr { top: 12px; right: 12px; }
-    .bracket-bl { bottom: 12px; left: 12px; }
-    .bracket-br { bottom: 12px; right: 12px; }
+    .bracket-tl {
+      top: 12px;
+      left: 12px;
+    }
+    .bracket-tr {
+      top: 12px;
+      right: 12px;
+    }
+    .bracket-bl {
+      bottom: 12px;
+      left: 12px;
+    }
+    .bracket-br {
+      bottom: 12px;
+      right: 12px;
+    }
 
-    .hud-top { top: 20px; left: 24px; right: 24px; }
-    .hud-bottom { bottom: 20px; left: 24px; right: 24px; }
+    .hud-top {
+      top: 20px;
+      left: 24px;
+      right: 24px;
+    }
+    .hud-bottom {
+      bottom: 20px;
+      left: 24px;
+      right: 24px;
+    }
 
     .go-back {
       padding: 0.8rem 1.2rem;
